@@ -1,74 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace TagsEditor
+﻿namespace TagsEditor
 {
-    public partial class SelectOsuFileDialog : Form
+    partial class SelectOsuFileDialog
     {
-        public string SelectedFilePath { get; private set; }
+        private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.Label lblDiffList;
+        private System.Windows.Forms.ListBox lstDiffNames;
+        private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Button btnCancel;
 
-        public SelectOsuFileDialog(Dictionary<string, string> fileMap)
+        private void InitializeComponent()
         {
-            InitializeComponent();
-            this.Text = "ファイル選択";
-            Label lbl = new Label
-            {
-                Text = "Diff間でタグの内容が異なります。\nどの *.osu ファイルのタグを表示しますか？",
-                AutoSize = true,
-                Top = 10,
-                Left = 10
-            };
-
-            ComboBox cmb = new ComboBox
-            {
-                Name = "comboFiles",
-                Left = 10,
-                Top = 50,
-                Width = 300,
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-
-            foreach (var kv in fileMap)
-                cmb.Items.Add(kv.Key);
-
-            if (cmb.Items.Count > 0)
-                cmb.SelectedIndex = 0;
-
-            Button btnOK = new Button
-            {
-                Text = "OK",
-                DialogResult = DialogResult.OK,
-                Left = 130,
-                Top = 90,
-                Width = 80
-            };
-
-            Button btnCancel = new Button
-            {
-                Text = "キャンセル",
-                DialogResult = DialogResult.Cancel,
-                Left = 220,
-                Top = 90,
-                Width = 80
-            };
-
-            this.Controls.Add(lbl);
-            this.Controls.Add(cmb);
-            this.Controls.Add(btnOK);
-            this.Controls.Add(btnCancel);
-
-            this.AcceptButton = btnOK;
-            this.CancelButton = btnCancel;
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.ClientSize = new System.Drawing.Size(350, 130);
-
-            btnOK.Click += (s, e) =>
-            {
-                if (cmb.SelectedItem != null)
-                    SelectedFilePath = fileMap[cmb.SelectedItem.ToString()];
-            };
+            this.lblDiffList = new System.Windows.Forms.Label();
+            this.lstDiffNames = new System.Windows.Forms.ListBox();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // lblDiffList
+            // 
+            this.lblDiffList.AutoSize = true;
+            this.lblDiffList.Location = new System.Drawing.Point(12, 9);
+            this.lblDiffList.Name = "lblDiffList";
+            this.lblDiffList.Size = new System.Drawing.Size(110, 15);
+            this.lblDiffList.TabIndex = 0;
+            this.lblDiffList.Text = "異なる項目: ---";
+            // 
+            // lstDiffNames
+            // 
+            this.lstDiffNames.FormattingEnabled = true;
+            this.lstDiffNames.ItemHeight = 15;
+            this.lstDiffNames.Location = new System.Drawing.Point(12, 36);
+            this.lstDiffNames.Name = "lstDiffNames";
+            this.lstDiffNames.Size = new System.Drawing.Size(260, 124);
+            this.lstDiffNames.TabIndex = 1;
+            // 
+            // btnOK
+            // 
+            this.btnOK.Location = new System.Drawing.Point(116, 170);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(75, 25);
+            this.btnOK.TabIndex = 2;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(197, 170);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 25);
+            this.btnCancel.TabIndex = 3;
+            this.btnCancel.Text = "キャンセル";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // SelectOsuFileDialog
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 207);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.lstDiffNames);
+            this.Controls.Add(this.lblDiffList);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "SelectOsuFileDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "代表ファイルを選択してください";
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
     }
 }

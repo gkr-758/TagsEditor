@@ -1,43 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TagsEditor
 {
     public partial class SelectOsuFileDialog : Form
     {
-        public SelectOsuFileDialog()
+        private readonly Dictionary<string, string> diffNameToFilePath;
+
+        // 初期化しておく（null許容にしないため）
+        public string SelectedFilePath { get; private set; } = string.Empty;
+
+        public SelectOsuFileDialog(Dictionary<string, string> diffNameToFilePath, string diffList)
         {
             InitializeComponent();
+
+            this.diffNameToFilePath = diffNameToFilePath ?? new Dictionary<string, string>();
+
+            lblDiffList.Text = $"異なる項目: {diffList}";
+
+            foreach (var diffName in this.diffNameToFilePath.Keys)
+            {
+                lstDiffNames.Items.Add(diffName);
+            }
+
+            if (lstDiffNames.Items.Count > 0)
+            {
+                lstDiffNames.SelectedIndex = 0;
+            }
+
+            btnOK.Click += BtnOK_Click;
+            btnCancel.Click += BtnCancel_Click;
         }
 
-        private void InitializeComponent()
+        private void BtnOK_Click(object sender, EventArgs e)
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectOsuFileDialog));
-            this.SuspendLayout();
-            // 
-            // SelectOsuFileDialog
-            // 
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "SelectOsuFileDialog";
-            this.Load += new System.EventHandler(this.SelectOsuFileDialog_Load);
-            this.ResumeLayout(false);
+            if (lstDiffNames.SelectedItem == null)
+            {
+                MessageBox.Show("難易度を選択してください。", "エラー");
+                return;
+            }
 
+            string selectedDiff = lstDiffNames.SelectedItem.ToString()!;
+            SelectedFilePath = diffNameToFilePath[selectedDiff];
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
-        private void SelectOsuFileDialog_Load(object sender, EventArgs e)
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
-
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }

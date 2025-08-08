@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\nichi\\source\\repos\\osu! Metadata Checker\\TagsEditor\\TagsEditor\\TagsEditor.csproj": {}
+    "C:\\Users\\nichi\\Source\\Repos\\gkr-758\\TagsEditor\\TagsEditor\\TagsEditor.csproj": {}
   },
   "projects": {
-    "C:\\Users\\nichi\\source\\repos\\osu! Metadata Checker\\TagsEditor\\TagsEditor\\TagsEditor.csproj": {
+    "C:\\Users\\nichi\\Source\\Repos\\gkr-758\\TagsEditor\\TagsEditor\\TagsEditor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\nichi\\source\\repos\\osu! Metadata Checker\\TagsEditor\\TagsEditor\\TagsEditor.csproj",
+        "projectUniqueName": "C:\\Users\\nichi\\Source\\Repos\\gkr-758\\TagsEditor\\TagsEditor\\TagsEditor.csproj",
         "projectName": "TagsEditor",
-        "projectPath": "C:\\Users\\nichi\\source\\repos\\osu! Metadata Checker\\TagsEditor\\TagsEditor\\TagsEditor.csproj",
+        "projectPath": "C:\\Users\\nichi\\Source\\Repos\\gkr-758\\TagsEditor\\TagsEditor\\TagsEditor.csproj",
         "packagesPath": "C:\\Users\\nichi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\nichi\\source\\repos\\osu! Metadata Checker\\TagsEditor\\TagsEditor\\obj\\",
+        "outputPath": "C:\\Users\\nichi\\Source\\Repos\\gkr-758\\TagsEditor\\TagsEditor\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\nichi\\AppData\\Roaming\\NuGet\\NuGet.Config",
