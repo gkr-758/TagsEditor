@@ -17,6 +17,6 @@ Diff間でタグの内容が異なる場合は、参照する*.osuを選択で�
 Enable Backupにチェックを入れると実行ファイルと同じディレクトリにBackupフォルダが生成され、その中に変更前の*.osuファイルがバックアップされるようになっています。
 
 ## ダウンロード
-Actionsからダウンロードしてください。なんか勝手にビルドしてくれるらしい
+Actionsからダウンロードしてください。（Releaseのところは無視してください）なんか勝手にビルドしてくれるらしい
 
 ![Actions](http://sharex.underuri.dev/u/chrome_53DK0RuNgM.png)
