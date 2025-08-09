@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TagsEditor"
   ],
+  "SelectedNode": "\\TagsEditor\\MainForm.cs",
   "PreviewInSolutionExplorer": false
 }

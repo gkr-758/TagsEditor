@@ -34,3 +34,7 @@ C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windo
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\TagsEditor.pdb
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.genruntimeconfig.cache
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\ref\TagsEditor.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\MetroFramework.Design.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\MetroFramework.Fonts.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\MetroFramework.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.csproj.CopyComplete

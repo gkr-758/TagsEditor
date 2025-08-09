@@ -17,7 +17,7 @@ namespace TagsEditor
 
             this.diffNameToFilePath = diffNameToFilePath ?? new Dictionary<string, string>();
 
-            lblDiffList.Text = $"異なる項目: {diffList}";
+            lblDiffList.Text = $"Metadataが異なるDiffを検知しました。どのDiffを読み込みますか？ \n異なる項目: {diffList}";
 
             foreach (var diffName in this.diffNameToFilePath.Keys)
             {
@@ -52,5 +52,6 @@ namespace TagsEditor
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+
     }
 }

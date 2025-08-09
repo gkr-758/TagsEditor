@@ -21,7 +21,7 @@
             this.lblDiffList.AutoSize = true;
             this.lblDiffList.Location = new System.Drawing.Point(12, 9);
             this.lblDiffList.Name = "lblDiffList";
-            this.lblDiffList.Size = new System.Drawing.Size(110, 15);
+            this.lblDiffList.Size = new System.Drawing.Size(83, 15);
             this.lblDiffList.TabIndex = 0;
             this.lblDiffList.Text = "異なる項目: ---";
             // 
@@ -29,14 +29,14 @@
             // 
             this.lstDiffNames.FormattingEnabled = true;
             this.lstDiffNames.ItemHeight = 15;
-            this.lstDiffNames.Location = new System.Drawing.Point(12, 36);
+            this.lstDiffNames.Location = new System.Drawing.Point(12, 51);
             this.lstDiffNames.Name = "lstDiffNames";
-            this.lstDiffNames.Size = new System.Drawing.Size(260, 124);
+            this.lstDiffNames.Size = new System.Drawing.Size(364, 109);
             this.lstDiffNames.TabIndex = 1;
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(116, 170);
+            this.btnOK.Location = new System.Drawing.Point(220, 170);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 25);
             this.btnOK.TabIndex = 2;
@@ -45,7 +45,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(197, 170);
+            this.btnCancel.Location = new System.Drawing.Point(301, 170);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 25);
             this.btnCancel.TabIndex = 3;
@@ -54,7 +54,7 @@
             // 
             // SelectOsuFileDialog
             // 
-            this.ClientSize = new System.Drawing.Size(284, 207);
+            this.ClientSize = new System.Drawing.Size(387, 207);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lstDiffNames);
@@ -67,6 +67,7 @@
             this.Text = "代表ファイルを選択してください";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
     }
 }

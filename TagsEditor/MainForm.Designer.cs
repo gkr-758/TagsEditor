@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TagsEditor));
             this.label1 = new System.Windows.Forms.Label();
             this.txtFolderPath = new System.Windows.Forms.TextBox();
@@ -54,6 +55,8 @@
             this.txtBGPos = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.txtBGFile = new System.Windows.Forms.TextBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.chkFolderMode = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,9 +65,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(474, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 15);
+            this.label1.Size = new System.Drawing.Size(60, 15);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Folder Path";
+            this.label1.Text = "ファイルパス";
             // 
             // txtFolderPath
             // 
@@ -79,7 +82,7 @@
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(75, 23);
             this.btnBrowse.TabIndex = 2;
-            this.btnBrowse.Text = "Browse";
+            this.btnBrowse.Text = "参照";
             this.btnBrowse.UseVisualStyleBackColor = true;
             // 
             // NewTags
@@ -102,11 +105,11 @@
             // chkBackup
             // 
             this.chkBackup.AutoSize = true;
-            this.chkBackup.Location = new System.Drawing.Point(474, 273);
+            this.chkBackup.Location = new System.Drawing.Point(698, 272);
             this.chkBackup.Name = "chkBackup";
-            this.chkBackup.Size = new System.Drawing.Size(103, 19);
+            this.chkBackup.Size = new System.Drawing.Size(140, 19);
             this.chkBackup.TabIndex = 7;
-            this.chkBackup.Text = "Enable Backup";
+            this.chkBackup.Text = "バックアップを有効にする";
             this.chkBackup.UseVisualStyleBackColor = true;
             // 
             // btnUpdate
@@ -115,7 +118,7 @@
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(388, 85);
             this.btnUpdate.TabIndex = 8;
-            this.btnUpdate.Text = "Update";
+            this.btnUpdate.Text = "更新";
             this.btnUpdate.UseVisualStyleBackColor = true;
             // 
             // btnOpenExeFolder
@@ -124,7 +127,7 @@
             this.btnOpenExeFolder.Name = "btnOpenExeFolder";
             this.btnOpenExeFolder.Size = new System.Drawing.Size(164, 32);
             this.btnOpenExeFolder.TabIndex = 9;
-            this.btnOpenExeFolder.Text = "Open Application Folder";
+            this.btnOpenExeFolder.Text = "実行ファイルのフォルダを開く";
             this.btnOpenExeFolder.UseVisualStyleBackColor = true;
             // 
             // btnOpenBackupFolder
@@ -133,7 +136,7 @@
             this.btnOpenBackupFolder.Name = "btnOpenBackupFolder";
             this.btnOpenBackupFolder.Size = new System.Drawing.Size(164, 32);
             this.btnOpenBackupFolder.TabIndex = 10;
-            this.btnOpenBackupFolder.Text = "Open Backup Folder";
+            this.btnOpenBackupFolder.Text = "バックアップフォルダを開く";
             this.btnOpenBackupFolder.UseVisualStyleBackColor = true;
             // 
             // txtRomanisedTitle
@@ -274,11 +277,22 @@
             this.txtBGFile.Size = new System.Drawing.Size(164, 23);
             this.txtBGFile.TabIndex = 28;
             // 
+            // chkFolderMode
+            // 
+            this.chkFolderMode.AutoSize = true;
+            this.chkFolderMode.Location = new System.Drawing.Point(474, 272);
+            this.chkFolderMode.Name = "chkFolderMode";
+            this.chkFolderMode.Size = new System.Drawing.Size(147, 19);
+            this.chkFolderMode.TabIndex = 29;
+            this.chkFolderMode.Text = "フォルダモードを有効にする";
+            this.chkFolderMode.UseVisualStyleBackColor = true;
+            // 
             // TagsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(874, 423);
+            this.Controls.Add(this.chkFolderMode);
             this.Controls.Add(this.txtBGFile);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtBGPos);
@@ -309,7 +323,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "TagsEditor";
-            this.Text = "TagsEditor";
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -343,5 +356,7 @@
         private NumericUpDown txtBGPos;
         private Label label9;
         private TextBox txtBGFile;
+        private ToolTip toolTip1;
+        private CheckBox chkFolderMode;
     }
 }
