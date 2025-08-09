@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using MetroFramework.Properties;
 
 namespace TagsEditor
 {
@@ -21,7 +23,6 @@ namespace TagsEditor
         {
             InitializeComponent();
 
-            // イベント登録
             btnBrowse.Click += btnBrowse_Click;
             btnUpdate.Click += btnUpdate_Click;
             btnOpenExeFolder.Click += btnOpenExeFolder_Click;
@@ -44,11 +45,9 @@ namespace TagsEditor
             txtBGPos.ValueChanged += OnMetadataFieldChanged;
             txtDifficulty.TextChanged += OnDifficultyChanged;
 
-            // 初期状態のUI設定
             UpdateControlStates();
         }
 
-        // [修正] UIコントロールの状態を更新するメソッドを新設
         private void UpdateControlStates()
         {
             bool isFolderMode = chkFolderMode.Checked;
@@ -57,13 +56,12 @@ namespace TagsEditor
             chkEnableIndividualEdit.Enabled = isFolderMode;
             lstDiffs.Enabled = isFolderMode && isIndividualEdit;
 
-            // Difficulty, BG File, BG Pos の有効/無効状態を制御
             bool canEditSpecificFields = !isFolderMode || isIndividualEdit;
             txtDifficulty.Enabled = canEditSpecificFields;
             txtBGFile.Enabled = canEditSpecificFields;
             txtBGPos.Enabled = canEditSpecificFields;
 
-            lstDiffs.Invalidate(); // ListBoxを再描画
+            lstDiffs.Invalidate();  
         }
 
         private void chkFolderMode_CheckedChanged(object sender, EventArgs e)
@@ -83,7 +81,6 @@ namespace TagsEditor
         private void chkEnableIndividualEdit_CheckedChanged(object sender, EventArgs e)
         {
             UpdateControlStates();
-            // 個別編集が無効になったら、最初のファイルのメタデータを再読み込み
             if (!chkEnableIndividualEdit.Checked && osuFiles.Length > 0)
             {
                 LoadMetadata();
@@ -100,8 +97,6 @@ namespace TagsEditor
             txtSource.Enabled = enabled;
             txtNewTags.Enabled = enabled;
 
-            // [修正] このメソッドは共通項目のみを制御するように変更
-            // txtBGFile, txtBGPos, txtDifficultyはUpdateControlStatesで制御
         }
 
         private void ClearAllFields()
@@ -158,6 +153,7 @@ namespace TagsEditor
 
         private void btnOpenExeFolder_Click(object sender, EventArgs e)
         {
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(TagsEditor));
             string exeDir = AppDomain.CurrentDomain.BaseDirectory;
             try
             {
@@ -170,12 +166,13 @@ namespace TagsEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show("exeフォルダを開く際にエラーが発生しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(resources.GetString("exeOpenError"), resources.GetString("ErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnOpenBackupFolder_Click(object sender, EventArgs e)
         {
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(TagsEditor));
             try
             {
                 if (!Directory.Exists(backupDir))
@@ -192,17 +189,18 @@ namespace TagsEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Backupフォルダを開く際にエラーが発生しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(resources.GetString("BackupOpenError"), resources.GetString("ErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private bool ValidateInputs()
         {
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(TagsEditor));
             if (!IsAsciiAlphaNum(txtRomanisedArtist.Text))
             {
                 var result = MessageBox.Show(
-                    "Romanised Artist欄に英数字・半角記号以外の文字（日本語等）が含まれています。\n続行しますか？",
-                    "警告",
+                    resources.GetString("RomArtWarn"),
+                    resources.GetString("WarnTitle"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                 );
@@ -211,8 +209,8 @@ namespace TagsEditor
             if (!IsAsciiAlphaNum(txtRomanisedTitle.Text))
             {
                 var result = MessageBox.Show(
-                    "Romanised Title欄に英数字・半角記号以外の文字（日本語等）が含まれています。\n続行しますか？",
-                    "警告",
+                    resources.GetString("RomTitWarn"),
+                    resources.GetString("WarnTitle"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                 );
@@ -237,8 +235,8 @@ namespace TagsEditor
                 if (ContainsForbiddenUnicode(field, out string foundChar))
                 {
                     var warnResult = MessageBox.Show(
-                        $"入力欄にosu!で使用できない特殊な文字「{foundChar}」が含まれています。\n続行しますか？",
-                        "警告",
+                    resources.GetString("ForbWarn"),
+                    resources.GetString("WarnTitle"),
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
@@ -249,8 +247,8 @@ namespace TagsEditor
             if (string.IsNullOrWhiteSpace(txtBGFile.Text))
             {
                 var warnResult = MessageBox.Show(
-                    "BG File Nameが空欄ですが、このままで続行しますか？",
-                    "警告",
+                    resources.GetString("BGNullWarn"),
+                    resources.GetString("WarnTitle"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
                 );
@@ -262,8 +260,8 @@ namespace TagsEditor
                 if (!(lower.EndsWith(".jpg") || lower.EndsWith(".png")))
                 {
                     var extResult = MessageBox.Show(
-                        "BG File Nameの拡張子が.jpgか.pngではありません。拡張子が抜けている可能性があります。続行しますか？",
-                        "警告",
+                    resources.GetString("BGTextWarn"),
+                    resources.GetString("WarnTitle"),
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
                     );
@@ -319,7 +317,6 @@ namespace TagsEditor
                 return;
             }
 
-            // [修正] ロジックを簡略化。常に最初のファイルのメタデータを読み込む
             var firstFileMeta = ReadFullMetadata(osuFiles[0]);
 
             ignoreFieldChange = true;
@@ -335,7 +332,6 @@ namespace TagsEditor
             txtDifficulty.Text = firstFileMeta.Difficulty;
             ignoreFieldChange = false;
 
-            // 全ての共通フィールドを有効にする
             SetMetadataFieldsEnabled(true);
         }
 
@@ -348,7 +344,6 @@ namespace TagsEditor
                 return versionLine.Substring("Version:".Length).Trim();
             }
 
-            // Fallback for safety
             string fileName = Path.GetFileNameWithoutExtension(filePath);
             int open = fileName.IndexOf('[');
             int close = fileName.LastIndexOf(']');
@@ -368,7 +363,7 @@ namespace TagsEditor
                 var metadata = ReadFullMetadata(file);
                 var item = new DiffListItem()
                 {
-                    DiffName = metadata.Difficulty, // [修正] ファイル名ではなく、Versionタグから取得
+                    DiffName = metadata.Difficulty,   
                     FilePath = file,
                     IsEdited = false,
                     OriginalMetadata = metadata.Clone(),
@@ -427,7 +422,7 @@ namespace TagsEditor
             string oldRomanisedArtist, string oldRomanisedTitle, string oldCreator, string oldDiffName,
             string newRomanisedArtist, string newRomanisedTitle, string newCreator, string newDiffName)
         {
-            // [修正] Sanitize characters forbidden in filenames
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(TagsEditor));
             char[] invalidChars = Path.GetInvalidFileNameChars();
             string Sanitize(string input) => string.Concat(input.Split(invalidChars));
 
@@ -452,7 +447,7 @@ namespace TagsEditor
             {
                 if (File.Exists(newFilePath))
                 {
-                    MessageBox.Show($"リネーム先のファイルが既に存在します: {newFileName}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(resources.GetString("Exists"), resources.GetString("ErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return filePath;
                 }
                 File.Move(filePath, newFilePath);
@@ -545,12 +540,10 @@ namespace TagsEditor
         {
             if (ignoreFieldChange) return;
 
-            // 個別編集モードの場合のみDiffNameを更新
             if (chkFolderMode.Checked && chkEnableIndividualEdit.Checked && lstDiffs.SelectedItem is DiffListItem item)
             {
                 item.EditedMetadata.Difficulty = txtDifficulty.Text;
                 item.IsEdited = !item.OriginalMetadata.IsSame(item.EditedMetadata);
-                // リストボックスの表示テキストを更新するために、アイテムを一度削除して再追加
                 int selectedIndex = lstDiffs.SelectedIndex;
                 if (selectedIndex != -1)
                 {
@@ -591,9 +584,10 @@ namespace TagsEditor
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(TagsEditor));
             if (osuFiles.Length == 0)
             {
-                MessageBox.Show(".osuファイルが見つかりません。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(resources.GetString("osuFNE"), resources.GetString("ErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (!ValidateInputs()) return;
@@ -605,7 +599,6 @@ namespace TagsEditor
             }
             else
             {
-                // 一括更新の場合、最低1つのフィールドが変更されているかチェック
                 var firstFileMeta = ReadFullMetadata(osuFiles[0]);
                 bool hasDiff =
                     firstFileMeta.Artist != txtArtist.Text.Trim() ||
@@ -616,7 +609,6 @@ namespace TagsEditor
                     firstFileMeta.Source != txtSource.Text.Trim() ||
                     firstFileMeta.Tags != txtNewTags.Text.Trim();
 
-                // 単体ファイルモードの場合、追加でチェック
                 if (!chkFolderMode.Checked)
                 {
                     hasDiff |= firstFileMeta.Difficulty != txtDifficulty.Text.Trim() ||
@@ -629,13 +621,20 @@ namespace TagsEditor
 
             if (updateTargetCount == 0)
             {
-                MessageBox.Show("ファイルの内容に変更がありません。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(resources.GetString("notUpdateError"), resources.GetString("InfoTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
+            string messageFormat = resources.GetString("osuFUpdate");
+            string message = string.Format(messageFormat, updateTargetCount);
+            string title = resources.GetString("updateTitle");
+
             var confirmResult = MessageBox.Show(
-                $"{updateTargetCount} 件の .osu ファイルを更新しますか？", "確認",
-                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                message,
+                title,
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question);
+
             if (confirmResult != DialogResult.OK) return;
 
             try
@@ -656,19 +655,17 @@ namespace TagsEditor
 
                 if (chkEnableIndividualEdit.Checked && chkFolderMode.Checked)
                 {
-                    // 個別編集モード
                     foreach (var item in diffItems.Where(i => i.IsEdited).ToList())
                     {
-                        UpdateSingleFile(item.FilePath, item.EditedMetadata, item.OriginalMetadata);
+                        updatedFiles.Add(UpdateSingleFile(item.FilePath, item.EditedMetadata, item.OriginalMetadata));
                         item.OriginalMetadata = item.EditedMetadata.Clone();
                         item.IsEdited = false;
                     }
                     osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
-                    LoadDiffList(); // リストを再構築
+                    LoadDiffList();
                 }
                 else
                 {
-                    // 一括更新モード or 単体ファイルモード
                     Metadata newMeta = new Metadata
                     {
                         Artist = txtArtist.Text.Trim(),
@@ -678,7 +675,6 @@ namespace TagsEditor
                         Creator = txtCreator.Text.Trim(),
                         Source = txtSource.Text.Trim(),
                         Tags = txtNewTags.Text.Trim(),
-                        // 以下は単体ファイルモードでのみ使用される
                         Difficulty = txtDifficulty.Text.Trim(),
                         BGFile = txtBGFile.Text.Trim(),
                         BGPos = txtBGPos.Value
@@ -690,34 +686,43 @@ namespace TagsEditor
                         updatedFiles.Add(UpdateSingleFile(file, newMeta, originalMeta));
                     }
                     osuFiles = updatedFiles.ToArray();
-                    LoadMetadata(); // UIを更新
+                    LoadMetadata();
                     if (chkFolderMode.Checked) LoadDiffList();
                 }
 
-                MessageBox.Show("更新が完了しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(resources.GetString("UpdateOK"), resources.GetString("OKTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                try
+                {
+                    if (Directory.Exists(selectedFolder))
+                    {
+                        TriggerOsuFileRefresh(selectedFolder);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(resources.GetString("osuUpdateError"), resources.GetString("ErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("エラーが発生しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(resources.GetString("Error"), resources.GetString("ErrorTitle"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 File.AppendAllText("error.log", $"[{DateTime.Now}] {ex.Message}\n{ex.StackTrace}\n");
             }
         }
 
-        // [修正] ファイル更新ロジックを別メソッドに分離
         private string UpdateSingleFile(string filePath, Metadata newMeta, Metadata originalMeta)
         {
             string newRomanisedArtist = newMeta.RomanisedArtist;
             string newRomanisedTitle = newMeta.RomanisedTitle;
             string newCreator = newMeta.Creator;
 
-            // [修正] Difficulty, BGFile, BGPos はモードによって更新するかどうかを決定
             bool canUpdateSpecifics = !chkFolderMode.Checked || chkEnableIndividualEdit.Checked;
 
             string newDiffName = canUpdateSpecifics ? newMeta.Difficulty : originalMeta.Difficulty;
             string newBgFile = canUpdateSpecifics ? newMeta.BGFile : originalMeta.BGFile;
             decimal newBgPos = canUpdateSpecifics ? newMeta.BGPos : originalMeta.BGPos;
 
-            // ファイル名のリネーム
             string newFilePath = RenameFileIfNeeded(
                 filePath,
                 originalMeta.RomanisedArtist, originalMeta.RomanisedTitle, originalMeta.Creator, originalMeta.Difficulty,
@@ -726,7 +731,6 @@ namespace TagsEditor
 
             var lines = File.ReadAllLines(newFilePath).ToList();
 
-            // メタデータ更新
             UpdateLine(lines, "Artist:", newRomanisedArtist);
             UpdateLine(lines, "ArtistUnicode:", newMeta.Artist);
             UpdateLine(lines, "Title:", newRomanisedTitle);
@@ -736,7 +740,6 @@ namespace TagsEditor
             UpdateLine(lines, "Tags:", newMeta.Tags);
             UpdateLine(lines, "Version:", newDiffName);
 
-            // 背景情報更新
             int bgSectionIndex = lines.FindIndex(l => l.StartsWith("//Background and Video events"));
             if (bgSectionIndex != -1 && bgSectionIndex + 1 < lines.Count)
             {
@@ -753,26 +756,21 @@ namespace TagsEditor
             return newFilePath;
         }
 
-        // [修正] 行を効率的に更新するためのヘルパーメソッド
         private void UpdateLine(List<string> lines, string key, string value)
         {
             int index = lines.FindIndex(l => l.StartsWith(key));
             if (index != -1)
             {
-                // " " を削除し、キーと値を直接結合する
                 lines[index] = key + value;
             }
         }
         private void SwitchLanguage(string cultureName)
         {
-            // 設定を保存
             Properties.Settings.Default.Language = cultureName;
             Properties.Settings.Default.Save();
 
-            // 再起動を促すメッセージ (これもリソース化するのが望ましい)
             MessageBox.Show("Language settings will be applied after restarting the application.", "Restart required", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // アプリケーションを再起動する
             Application.Restart();
         }
 
@@ -789,6 +787,24 @@ namespace TagsEditor
         private void TagsEditor_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void TriggerOsuFileRefresh(string beatmapDirectory)
+        {
+            string tempFileName = "tmp.tmp";
+            string tempFilePath = Path.Combine(beatmapDirectory, tempFileName);
+
+            try
+            {
+                File.Create(tempFilePath).Close();
+            }
+            finally
+            {
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                }
+            }
         }
     }
 }

@@ -3638,4 +3638,61 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="BackupOpenError" xml:space="preserve">
+    <value>Backupフォルダを開く際にエラーが発生しました。</value>
+  </data>
+  <data name="BGNullWarn" xml:space="preserve">
+    <value>BGファイル名が空欄です。\n続行しますか？</value>
+  </data>
+  <data name="BGTextWarn" xml:space="preserve">
+    <value>BGファイル名の拡張子を検知出来ませんでした。続行しますか？</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラーが発生しました。</value>
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="exeOpenError" xml:space="preserve">
+    <value>実行ファイルのフォルダを開く際にエラーが発生しました。</value>
+  </data>
+  <data name="Exists" xml:space="preserve">
+    <value>リネーム先のファイルが既に存在します。</value>
+  </data>
+  <data name="ForbWarn" xml:space="preserve">
+    <value>入力欄にosu!で使用できない特殊な文字が含まれています。続行しますか？</value>
+  </data>
+  <data name="InfoTitle" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="notUpdateError" xml:space="preserve">
+    <value>ファイルの内容に変更がありません。</value>
+  </data>
+  <data name="OKTitle" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="osuFNE" xml:space="preserve">
+    <value>.osuファイルが見つかりません。</value>
+  </data>
+  <data name="osuFUpdate" xml:space="preserve">
+    <value>{0} 件の .osuファイルを更新しますか？</value>
+  </data>
+  <data name="osuUpdateError" xml:space="preserve">
+    <value>osu!の自動更新中にエラーが発生しました。</value>
+  </data>
+  <data name="RomArtWarn" xml:space="preserve">
+    <value>Romanised Artistに英数字・半角記号以外の文字（日本語等）が含まれています。続行しますか？</value>
+  </data>
+  <data name="RomTitWarn" xml:space="preserve">
+    <value>Romanised Titleに英数字・半角記号以外の文字（日本語等）が含まれています。続行しますか？</value>
+  </data>
+  <data name="UpdateOK" xml:space="preserve">
+    <value>更新が完了しました。</value>
+  </data>
+  <data name="updateTitle" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="WarnTitle" xml:space="preserve">
+    <value>警告</value>
+  </data>
 </root>
