@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,16 +14,110 @@ namespace TagsEditor
         private string selectedFolder = string.Empty;
         private string[] osuFiles = new string[0];
         private string backupDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Backup");
+        private List<DiffListItem> diffItems = new List<DiffListItem>();
+        private bool ignoreFieldChange = false;
 
         public TagsEditor()
         {
             InitializeComponent();
-            this.Text = "TagsEditor";
 
+            // イベント登録
             btnBrowse.Click += btnBrowse_Click;
             btnUpdate.Click += btnUpdate_Click;
             btnOpenExeFolder.Click += btnOpenExeFolder_Click;
             btnOpenBackupFolder.Click += btnOpenBackupFolder_Click;
+            chkFolderMode.CheckedChanged += chkFolderMode_CheckedChanged;
+            chkEnableIndividualEdit.CheckedChanged += chkEnableIndividualEdit_CheckedChanged;
+
+            lstDiffs.SelectedIndexChanged += lstDiffs_SelectedIndexChanged;
+            lstDiffs.DrawMode = DrawMode.OwnerDrawFixed;
+            lstDiffs.DrawItem += lstDiffs_DrawItem;
+
+            txtArtist.TextChanged += OnMetadataFieldChanged;
+            txtRomanisedArtist.TextChanged += OnMetadataFieldChanged;
+            txtTitle.TextChanged += OnMetadataFieldChanged;
+            txtRomanisedTitle.TextChanged += OnMetadataFieldChanged;
+            txtCreator.TextChanged += OnMetadataFieldChanged;
+            txtSource.TextChanged += OnMetadataFieldChanged;
+            txtNewTags.TextChanged += OnMetadataFieldChanged;
+            txtBGFile.TextChanged += OnMetadataFieldChanged;
+            txtBGPos.ValueChanged += OnMetadataFieldChanged;
+            txtDifficulty.TextChanged += OnDifficultyChanged;
+
+            // 初期状態のUI設定
+            UpdateControlStates();
+        }
+
+        // [修正] UIコントロールの状態を更新するメソッドを新設
+        private void UpdateControlStates()
+        {
+            bool isFolderMode = chkFolderMode.Checked;
+            bool isIndividualEdit = chkEnableIndividualEdit.Checked;
+
+            chkEnableIndividualEdit.Enabled = isFolderMode;
+            lstDiffs.Enabled = isFolderMode && isIndividualEdit;
+
+            // Difficulty, BG File, BG Pos の有効/無効状態を制御
+            bool canEditSpecificFields = !isFolderMode || isIndividualEdit;
+            txtDifficulty.Enabled = canEditSpecificFields;
+            txtBGFile.Enabled = canEditSpecificFields;
+            txtBGPos.Enabled = canEditSpecificFields;
+
+            lstDiffs.Invalidate(); // ListBoxを再描画
+        }
+
+        private void chkFolderMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!chkFolderMode.Checked)
+            {
+                chkEnableIndividualEdit.Checked = false;
+            }
+            txtFolderPath.Text = "";
+            ClearAllFields();
+            osuFiles = new string[0];
+            diffItems.Clear();
+            lstDiffs.Items.Clear();
+            UpdateControlStates();
+        }
+
+        private void chkEnableIndividualEdit_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateControlStates();
+            // 個別編集が無効になったら、最初のファイルのメタデータを再読み込み
+            if (!chkEnableIndividualEdit.Checked && osuFiles.Length > 0)
+            {
+                LoadMetadata();
+            }
+        }
+
+        private void SetMetadataFieldsEnabled(bool enabled)
+        {
+            txtArtist.Enabled = enabled;
+            txtRomanisedArtist.Enabled = enabled;
+            txtTitle.Enabled = enabled;
+            txtRomanisedTitle.Enabled = enabled;
+            txtCreator.Enabled = enabled;
+            txtSource.Enabled = enabled;
+            txtNewTags.Enabled = enabled;
+
+            // [修正] このメソッドは共通項目のみを制御するように変更
+            // txtBGFile, txtBGPos, txtDifficultyはUpdateControlStatesで制御
+        }
+
+        private void ClearAllFields()
+        {
+            ignoreFieldChange = true;
+            txtArtist.Text = "";
+            txtRomanisedArtist.Text = "";
+            txtTitle.Text = "";
+            txtRomanisedTitle.Text = "";
+            txtCreator.Text = "";
+            txtSource.Text = "";
+            txtNewTags.Text = "";
+            txtBGFile.Text = "";
+            txtBGPos.Value = 0;
+            txtDifficulty.Text = "";
+            ignoreFieldChange = false;
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -37,6 +132,7 @@ namespace TagsEditor
                         txtFolderPath.Text = selectedFolder;
                         osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
                         LoadMetadata();
+                        LoadDiffList();
                     }
                 }
             }
@@ -44,7 +140,7 @@ namespace TagsEditor
             {
                 using (var dialog = new OpenFileDialog())
                 {
-                    dialog.Filter = "osu files (*.osu)|*.osu";
+                    dialog.Filter = "osu! file (*.osu)|*.osu";
                     dialog.Multiselect = false;
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
@@ -52,9 +148,12 @@ namespace TagsEditor
                         selectedFolder = Path.GetDirectoryName(dialog.FileName) ?? "";
                         txtFolderPath.Text = osuFiles[0];
                         LoadMetadata();
+                        lstDiffs.Items.Clear();
+                        diffItems.Clear();
                     }
                 }
             }
+            UpdateControlStates();
         }
 
         private void btnOpenExeFolder_Click(object sender, EventArgs e)
@@ -97,223 +196,8 @@ namespace TagsEditor
             }
         }
 
-        private void LoadMetadata()
-        {
-            Dictionary<string, Control> metadataMap = new Dictionary<string, Control>()
-            {
-                { "ArtistUnicode:", txtArtist },
-                { "Artist:", txtRomanisedArtist },
-                { "TitleUnicode:", txtTitle },
-                { "Title:", txtRomanisedTitle },
-                { "Creator:", txtCreator },
-                { "Source:", txtSource },
-                { "Tags:", txtNewTags }
-            };
-
-            var fileMetadata = new Dictionary<string, Dictionary<string, string>>();
-            var diffNameToFilePath = new Dictionary<string, string>();
-
-            foreach (var file in osuFiles)
-            {
-                var meta = new Dictionary<string, string>();
-                var lines = File.ReadAllLines(file);
-
-                foreach (var key in metadataMap.Keys)
-                {
-                    var line = lines.FirstOrDefault(l => l.StartsWith(key));
-                    if (line != null)
-                        meta[key] = line.Substring(key.Length).Trim();
-                }
-
-                // BGファイル名 & BG位置
-                int bgIndex = Array.FindIndex(lines, l => l.StartsWith("//Background and Video events"));
-                if (bgIndex != -1 && bgIndex + 1 < lines.Length)
-                {
-                    var parts = lines[bgIndex + 1].Split(',');
-                    if (parts.Length >= 5)
-                    {
-                        meta["BGFile"] = parts[2].Trim().Trim('"');
-                        meta["BGPos"] = parts[4].Trim();
-                    }
-                    else
-                    {
-                        meta["BGFile"] = "";
-                        meta["BGPos"] = "";
-                    }
-                }
-                else
-                {
-                    meta["BGFile"] = "";
-                    meta["BGPos"] = "";
-                }
-
-                fileMetadata[file] = meta;
-
-                // diff名を取得
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                int open = fileName.LastIndexOf('[');
-                int close = fileName.LastIndexOf(']');
-                if (open != -1 && close != -1 && close > open)
-                {
-                    string diff = fileName.Substring(open + 1, close - open - 1);
-                    if (!diffNameToFilePath.ContainsKey(diff))
-                        diffNameToFilePath[diff] = file;
-                }
-            }
-
-            var differingKeys = new List<string>();
-            var firstMeta = fileMetadata.Values.FirstOrDefault();
-
-            if (firstMeta == null)
-            {
-                // ファイルがない場合
-                foreach (var tb in metadataMap.Values)
-                    tb.Text = "";
-                txtBGFile.Text = "";
-                txtBGPos.Text = "";
-                return;
-            }
-
-            foreach (var key in firstMeta.Keys)
-            {
-                var distinctVals = fileMetadata.Values.Select(m => m[key]).Distinct().ToList();
-                if (distinctVals.Count > 1)
-                    differingKeys.Add(key);
-            }
-
-            if (differingKeys.Count == 0)
-            {
-                foreach (var kv in metadataMap)
-                    kv.Value.Text = firstMeta[kv.Key];
-
-                txtBGFile.Text = firstMeta["BGFile"];
-                txtBGPos.Text = firstMeta["BGPos"];
-            }
-            else
-            {
-                string diffList = string.Join(", ", differingKeys);
-                using (var dialog = new SelectOsuFileDialog(diffNameToFilePath, diffList))
-                {
-                    if (dialog.ShowDialog() == DialogResult.OK && File.Exists(dialog.SelectedFilePath))
-                    {
-                        var meta = fileMetadata[dialog.SelectedFilePath];
-                        foreach (var kv in metadataMap)
-                            kv.Value.Text = meta[kv.Key];
-
-                        txtBGFile.Text = meta["BGFile"];
-                        txtBGPos.Text = meta["BGPos"];
-                    }
-                    else
-                    {
-                        foreach (var tb in metadataMap.Values)
-                            tb.Text = "";
-                        txtBGFile.Text = "";
-                        txtBGPos.Text = "";
-                    }
-                }
-            }
-        }
-
-        private void btnUpdate_Click(object sender, EventArgs e)
-        {
-            if (osuFiles.Length == 0)
-            {
-                MessageBox.Show(".osuファイルが見つかりません。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // 入力文字チェック
-            if (!ValidateInputs()) return;
-
-            var result = MessageBox.Show($"{osuFiles.Length} 件の .osu ファイルを更新しますか？", "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            if (result != DialogResult.OK) return;
-
-            try
-            {
-                if (chkBackup.Checked)
-                {
-                    foreach (var file in osuFiles)
-                    {
-                        string relPath = "";
-                        if (chkFolderMode.Checked)
-                            relPath = Path.GetRelativePath(selectedFolder, file);
-                        else
-                            relPath = Path.GetFileName(file);
-
-                        string backupPath = Path.Combine(backupDir, Path.GetFileName(selectedFolder), relPath);
-                        Directory.CreateDirectory(Path.GetDirectoryName(backupPath)!);
-                        File.Copy(file, backupPath, true);
-                    }
-                }
-
-                List<string> updatedFiles = new List<string>();
-
-                foreach (var originalFile in osuFiles)
-                {
-                    var file = originalFile;
-
-                    // Romanised Artist, Romanised Title, Creatorを取得
-                    var (oldRomanisedArtist, oldRomanisedTitle, oldCreator) = ReadRomanisedMetadata(file);
-
-                    string newRomanisedArtist = txtRomanisedArtist.Text.Trim();
-                    string newRomanisedTitle = txtRomanisedTitle.Text.Trim();
-                    string newCreator = txtCreator.Text.Trim();
-
-                    string newFilePath = RenameFileIfNeeded(file, oldRomanisedArtist, oldRomanisedTitle, oldCreator,
-                                                            newRomanisedArtist, newRomanisedTitle, newCreator);
-
-                    file = newFilePath;
-
-                    var lines = File.ReadAllLines(file);
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        if (lines[i].StartsWith("Artist:"))
-                            lines[i] = "Artist:" + newRomanisedArtist;
-                        else if (lines[i].StartsWith("ArtistUnicode:"))
-                            lines[i] = "ArtistUnicode:" + txtArtist.Text.Trim();
-                        else if (lines[i].StartsWith("Title:"))
-                            lines[i] = "Title:" + newRomanisedTitle;
-                        else if (lines[i].StartsWith("TitleUnicode:"))
-                            lines[i] = "TitleUnicode:" + txtTitle.Text.Trim();
-                        else if (lines[i].StartsWith("Creator:"))
-                            lines[i] = "Creator:" + newCreator;
-                        else if (lines[i].StartsWith("Source:"))
-                            lines[i] = "Source:" + txtSource.Text.Trim();
-                        else if (lines[i].StartsWith("Tags:"))
-                            lines[i] = "Tags:" + txtNewTags.Text.Trim();
-
-                        if (lines[i].StartsWith("//Background and Video events") && i + 1 < lines.Length)
-                        {
-                            var parts = lines[i + 1].Split(',');
-                            if (parts.Length >= 5)
-                            {
-                                parts[2] = $"\"{txtBGFile.Text.Trim()}\"";
-                                parts[4] = txtBGPos.Text.Trim();
-                                lines[i + 1] = string.Join(",", parts);
-                            }
-                        }
-                    }
-
-                    File.WriteAllLines(file, lines, Encoding.UTF8);
-
-                    updatedFiles.Add(file);
-                }
-
-                osuFiles = updatedFiles.ToArray();
-
-                MessageBox.Show("更新しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("エラーが発生しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                File.AppendAllText("error.log", $"[{DateTime.Now}] {ex.Message}\n{ex.StackTrace}\n");
-            }
-        }
-
-        // 各入力欄に警告(びっくりマーク&音)を出し、Yes→続行/No→中断
         private bool ValidateInputs()
         {
-            // Romanised Artist と Romanised Title のASCIIチェック
             if (!IsAsciiAlphaNum(txtRomanisedArtist.Text))
             {
                 var result = MessageBox.Show(
@@ -335,15 +219,15 @@ namespace TagsEditor
                 if (result != DialogResult.Yes) return false;
             }
 
-            // すべての入力欄で特殊文字を検出
             string[] allFields = {
                 txtArtist.Text,
                 txtTitle.Text,
                 txtCreator.Text,
                 txtSource.Text,
+                txtDifficulty.Text,
                 txtNewTags.Text,
                 txtBGFile.Text,
-                txtBGPos.Text,
+                txtBGPos.Value.ToString(),
                 txtRomanisedArtist.Text,
                 txtRomanisedTitle.Text
             };
@@ -353,7 +237,7 @@ namespace TagsEditor
                 if (ContainsForbiddenUnicode(field, out string foundChar))
                 {
                     var warnResult = MessageBox.Show(
-                        $"入力欄にosu!で使用できない特殊な文字が含まれています。\n続行しますか？",
+                        $"入力欄にosu!で使用できない特殊な文字「{foundChar}」が含まれています。\n続行しますか？",
                         "警告",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -362,11 +246,10 @@ namespace TagsEditor
                 }
             }
 
-            // BG File Name の空欄/拡張子チェック（空欄のときは拡張子警告なし）
             if (string.IsNullOrWhiteSpace(txtBGFile.Text))
             {
                 var warnResult = MessageBox.Show(
-                    "BG File Nameが空欄ですが、このまま続行しますか？",
+                    "BG File Nameが空欄ですが、このままで続行しますか？",
                     "警告",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning
@@ -379,7 +262,7 @@ namespace TagsEditor
                 if (!(lower.EndsWith(".jpg") || lower.EndsWith(".png")))
                 {
                     var extResult = MessageBox.Show(
-                        "BG File Nameの拡張子を検知できませんでした。拡張子が抜けている可能性があります。続行しますか？",
+                        "BG File Nameの拡張子が.jpgか.pngではありません。拡張子が抜けている可能性があります。続行しますか？",
                         "警告",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning
@@ -391,7 +274,6 @@ namespace TagsEditor
             return true;
         }
 
-        // 特殊文字検出（charのみ、16bit超は考慮しなくてOK）
         private bool ContainsForbiddenUnicode(string input, out string foundChar)
         {
             foreach (char c in input)
@@ -401,17 +283,17 @@ namespace TagsEditor
                     foundChar = c.ToString();
                     return true;
                 }
-                if ((c >= '\u2070' && c <= '\u209F') || (c >= '\u1D2C' && c <= '\u1D6A')) // 上付き/下付き/IPA拡張
+                if ((c >= '\u2070' && c <= '\u209F') || (c >= '\u1D2C' && c <= '\u1D6A'))
                 {
                     foundChar = c.ToString();
                     return true;
                 }
-                if (c >= '\uFB00' && c <= '\uFB06') // 合字
+                if (c >= '\uFB00' && c <= '\uFB06')
                 {
                     foundChar = c.ToString();
                     return true;
                 }
-                if (c >= '\uE000' && c <= '\uF8FF') // Private Use Area
+                if (c >= '\uE000' && c <= '\uF8FF')
                 {
                     foundChar = c.ToString();
                     return true;
@@ -421,7 +303,6 @@ namespace TagsEditor
             return false;
         }
 
-        // ASCII英数字・半角記号のみ許可（ASCII制御文字以外0x20-0x7E）
         private bool IsAsciiAlphaNum(string input)
         {
             foreach (char c in input)
@@ -430,62 +311,457 @@ namespace TagsEditor
             }
             return true;
         }
-
-        // ファイル名用にRomanised Artist/Title/Creatorを取得
-        private (string RomanisedArtist, string RomanisedTitle, string Creator) ReadRomanisedMetadata(string filePath)
+        private void LoadMetadata()
         {
-            string romanisedArtist = "";
-            string romanisedTitle = "";
-            string creator = "";
-
-            foreach (var line in File.ReadLines(filePath))
+            if (osuFiles.Length == 0)
             {
-                if (line.StartsWith("Artist:"))
-                    romanisedArtist = line.Substring("Artist:".Length).Trim();
-                else if (line.StartsWith("Title:"))
-                    romanisedTitle = line.Substring("Title:".Length).Trim();
-                else if (line.StartsWith("Creator:"))
-                    creator = line.Substring("Creator:".Length).Trim();
-
-                if (!string.IsNullOrEmpty(romanisedArtist) && !string.IsNullOrEmpty(romanisedTitle) && !string.IsNullOrEmpty(creator))
-                    break;
+                ClearAllFields();
+                return;
             }
 
-            return (romanisedArtist, romanisedTitle, creator);
+            // [修正] ロジックを簡略化。常に最初のファイルのメタデータを読み込む
+            var firstFileMeta = ReadFullMetadata(osuFiles[0]);
+
+            ignoreFieldChange = true;
+            txtArtist.Text = firstFileMeta.Artist;
+            txtRomanisedArtist.Text = firstFileMeta.RomanisedArtist;
+            txtTitle.Text = firstFileMeta.Title;
+            txtRomanisedTitle.Text = firstFileMeta.RomanisedTitle;
+            txtCreator.Text = firstFileMeta.Creator;
+            txtSource.Text = firstFileMeta.Source;
+            txtNewTags.Text = firstFileMeta.Tags;
+            txtBGFile.Text = firstFileMeta.BGFile;
+            txtBGPos.Value = firstFileMeta.BGPos;
+            txtDifficulty.Text = firstFileMeta.Difficulty;
+            ignoreFieldChange = false;
+
+            // 全ての共通フィールドを有効にする
+            SetMetadataFieldsEnabled(true);
         }
 
-        // ファイル名はRomanised Artist - Romanised Title (Creator) [Diff].osu形式にする
-        private string RenameFileIfNeeded(string filePath, string oldRomanisedArtist, string oldRomanisedTitle, string oldCreator,
-                                  string newRomanisedArtist, string newRomanisedTitle, string newCreator)
+        private string ExtractDiffName(string filePath)
         {
-            if (oldRomanisedArtist == newRomanisedArtist && oldRomanisedTitle == newRomanisedTitle && oldCreator == newCreator)
+            var lines = File.ReadLines(filePath);
+            var versionLine = lines.FirstOrDefault(l => l.StartsWith("Version:"));
+            if (versionLine != null)
+            {
+                return versionLine.Substring("Version:".Length).Trim();
+            }
+
+            // Fallback for safety
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            int open = fileName.IndexOf('[');
+            int close = fileName.LastIndexOf(']');
+            if (open == -1 || close == -1 || close < open) return fileName;
+            return fileName.Substring(open + 1, close - open - 1);
+        }
+
+        private void LoadDiffList()
+        {
+            lstDiffs.Items.Clear();
+            diffItems.Clear();
+            if (!chkFolderMode.Checked || osuFiles.Length == 0)
+                return;
+
+            foreach (var file in osuFiles)
+            {
+                var metadata = ReadFullMetadata(file);
+                var item = new DiffListItem()
+                {
+                    DiffName = metadata.Difficulty, // [修正] ファイル名ではなく、Versionタグから取得
+                    FilePath = file,
+                    IsEdited = false,
+                    OriginalMetadata = metadata.Clone(),
+                    EditedMetadata = metadata.Clone()
+                };
+                diffItems.Add(item);
+                lstDiffs.Items.Add(item);
+            }
+            lstDiffs.DisplayMember = "DiffName";
+        }
+
+        private class DiffListItem
+        {
+            public string DiffName { get; set; }
+            public string FilePath { get; set; }
+            public bool IsEdited { get; set; }
+            public Metadata OriginalMetadata { get; set; }
+            public Metadata EditedMetadata { get; set; }
+            public override string ToString() => DiffName;
+        }
+
+        private class Metadata
+        {
+            public string Artist { get; set; } = "";
+            public string RomanisedArtist { get; set; } = "";
+            public string Title { get; set; } = "";
+            public string RomanisedTitle { get; set; } = "";
+            public string Creator { get; set; } = "";
+            public string Source { get; set; } = "";
+            public string Tags { get; set; } = "";
+            public string Difficulty { get; set; } = "";
+            public string BGFile { get; set; } = "";
+            public decimal BGPos { get; set; } = 0;
+
+            public Metadata Clone()
+            {
+                return (Metadata)MemberwiseClone();
+            }
+            public bool IsSame(Metadata other)
+            {
+                return Artist == other.Artist &&
+                       RomanisedArtist == other.RomanisedArtist &&
+                       Title == other.Title &&
+                       RomanisedTitle == other.RomanisedTitle &&
+                       Creator == other.Creator &&
+                       Source == other.Source &&
+                       Tags == other.Tags &&
+                       Difficulty == other.Difficulty &&
+                       BGFile == other.BGFile &&
+                       BGPos == other.BGPos;
+            }
+        }
+
+        private string RenameFileIfNeeded(
+            string filePath,
+            string oldRomanisedArtist, string oldRomanisedTitle, string oldCreator, string oldDiffName,
+            string newRomanisedArtist, string newRomanisedTitle, string newCreator, string newDiffName)
+        {
+            // [修正] Sanitize characters forbidden in filenames
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+            string Sanitize(string input) => string.Concat(input.Split(invalidChars));
+
+            newRomanisedArtist = Sanitize(newRomanisedArtist);
+            newRomanisedTitle = Sanitize(newRomanisedTitle);
+            newCreator = Sanitize(newCreator);
+            newDiffName = Sanitize(newDiffName);
+
+            if (oldRomanisedArtist == newRomanisedArtist &&
+                oldRomanisedTitle == newRomanisedTitle &&
+                oldCreator == newCreator &&
+                oldDiffName == newDiffName)
                 return filePath;
 
             string dir = Path.GetDirectoryName(filePath)!;
-            string oldFileName = Path.GetFileNameWithoutExtension(filePath);
             string ext = Path.GetExtension(filePath);
 
-            int diffStart = oldFileName.LastIndexOf('[');
-            string diffPart = "";
-            if (diffStart != -1)
-                diffPart = oldFileName.Substring(diffStart);
-
-            string newFileName = $"{newRomanisedArtist} - {newRomanisedTitle} ({newCreator}) {diffPart}{ext}";
+            string newFileName = $"{newRomanisedArtist} - {newRomanisedTitle} ({newCreator}) [{newDiffName}]{ext}";
             string newFilePath = Path.Combine(dir, newFileName);
 
             if (!string.Equals(filePath, newFilePath, StringComparison.OrdinalIgnoreCase))
             {
                 if (File.Exists(newFilePath))
                 {
-                    MessageBox.Show($"リネーム先のファイルが存在します: {newFileName}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"リネーム先のファイルが既に存在します: {newFileName}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return filePath;
                 }
-
                 File.Move(filePath, newFilePath);
                 return newFilePath;
             }
-
             return filePath;
+        }
+
+        private Metadata ReadFullMetadata(string filePath)
+        {
+            var meta = new Metadata();
+            var lines = File.ReadAllLines(filePath);
+
+            foreach (var line in lines)
+            {
+                if (line.StartsWith("ArtistUnicode:"))
+                    meta.Artist = line.Substring("ArtistUnicode:".Length).Trim();
+                else if (line.StartsWith("Artist:"))
+                    meta.RomanisedArtist = line.Substring("Artist:".Length).Trim();
+                else if (line.StartsWith("TitleUnicode:"))
+                    meta.Title = line.Substring("TitleUnicode:".Length).Trim();
+                else if (line.StartsWith("Title:"))
+                    meta.RomanisedTitle = line.Substring("Title:".Length).Trim();
+                else if (line.StartsWith("Creator:"))
+                    meta.Creator = line.Substring("Creator:".Length).Trim();
+                else if (line.StartsWith("Source:"))
+                    meta.Source = line.Substring("Source:".Length).Trim();
+                else if (line.StartsWith("Version:"))
+                    meta.Difficulty = line.Substring("Version:".Length).Trim();
+                else if (line.StartsWith("Tags:"))
+                    meta.Tags = line.Substring("Tags:".Length).Trim();
+            }
+
+            int bgSectionIndex = Array.FindIndex(lines, l => l.StartsWith("//Background and Video events"));
+            if (bgSectionIndex != -1 && bgSectionIndex + 1 < lines.Length)
+            {
+                var parts = lines[bgSectionIndex + 1].Split(',');
+                if (parts.Length >= 5 && (parts[0] == "0" || parts[0] == "Background"))
+                {
+                    meta.BGFile = parts[2].Trim().Trim('"');
+                    decimal.TryParse(parts[4].Trim(), out decimal posVal);
+                    meta.BGPos = posVal;
+                }
+            }
+            return meta;
+        }
+
+        private void lstDiffs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (chkEnableIndividualEdit.Checked && lstDiffs.SelectedItem is DiffListItem item)
+            {
+                ignoreFieldChange = true;
+                txtArtist.Text = item.EditedMetadata.Artist;
+                txtRomanisedArtist.Text = item.EditedMetadata.RomanisedArtist;
+                txtTitle.Text = item.EditedMetadata.Title;
+                txtRomanisedTitle.Text = item.EditedMetadata.RomanisedTitle;
+                txtCreator.Text = item.EditedMetadata.Creator;
+                txtSource.Text = item.EditedMetadata.Source;
+                txtNewTags.Text = item.EditedMetadata.Tags;
+                txtBGFile.Text = item.EditedMetadata.BGFile;
+                txtBGPos.Value = item.EditedMetadata.BGPos;
+                txtDifficulty.Text = item.EditedMetadata.Difficulty;
+                SetMetadataFieldsEnabled(true);
+                ignoreFieldChange = false;
+            }
+        }
+
+        private void OnMetadataFieldChanged(object sender, EventArgs e)
+        {
+            if (ignoreFieldChange) return;
+            if (chkEnableIndividualEdit.Checked && lstDiffs.SelectedItem is DiffListItem item)
+            {
+                item.EditedMetadata.Artist = txtArtist.Text;
+                item.EditedMetadata.RomanisedArtist = txtRomanisedArtist.Text;
+                item.EditedMetadata.Title = txtTitle.Text;
+                item.EditedMetadata.RomanisedTitle = txtRomanisedTitle.Text;
+                item.EditedMetadata.Creator = txtCreator.Text;
+                item.EditedMetadata.Source = txtSource.Text;
+                item.EditedMetadata.Tags = txtNewTags.Text;
+                item.EditedMetadata.Difficulty = txtDifficulty.Text;
+                item.EditedMetadata.BGFile = txtBGFile.Text;
+                item.EditedMetadata.BGPos = txtBGPos.Value;
+
+                item.IsEdited = !item.OriginalMetadata.IsSame(item.EditedMetadata);
+                lstDiffs.Invalidate();
+            }
+        }
+
+        private void OnDifficultyChanged(object sender, EventArgs e)
+        {
+            if (ignoreFieldChange) return;
+
+            // 個別編集モードの場合のみDiffNameを更新
+            if (chkFolderMode.Checked && chkEnableIndividualEdit.Checked && lstDiffs.SelectedItem is DiffListItem item)
+            {
+                item.EditedMetadata.Difficulty = txtDifficulty.Text;
+                item.IsEdited = !item.OriginalMetadata.IsSame(item.EditedMetadata);
+                // リストボックスの表示テキストを更新するために、アイテムを一度削除して再追加
+                int selectedIndex = lstDiffs.SelectedIndex;
+                if (selectedIndex != -1)
+                {
+                    item.DiffName = txtDifficulty.Text;
+                    lstDiffs.Items[selectedIndex] = item;
+                }
+                lstDiffs.Invalidate();
+            }
+        }
+
+        private void lstDiffs_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0) return;
+
+            var item = lstDiffs.Items[e.Index] as DiffListItem;
+            if (item == null) return;
+
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            e.DrawBackground();
+
+            Color foreColor;
+            if (!chkEnableIndividualEdit.Checked)
+            {
+                foreColor = Color.Gray;
+            }
+            else if (isSelected)
+            {
+                foreColor = SystemColors.HighlightText;
+            }
+            else
+            {
+                foreColor = item.IsEdited ? Color.Red : Color.Black;
+            }
+
+            TextRenderer.DrawText(e.Graphics, item.ToString(), e.Font, e.Bounds, foreColor, TextFormatFlags.Left);
+            e.DrawFocusRectangle();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (osuFiles.Length == 0)
+            {
+                MessageBox.Show(".osuファイルが見つかりません。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (!ValidateInputs()) return;
+
+            int updateTargetCount = 0;
+            if (chkEnableIndividualEdit.Checked && chkFolderMode.Checked)
+            {
+                updateTargetCount = diffItems.Count(item => item.IsEdited);
+            }
+            else
+            {
+                // 一括更新の場合、最低1つのフィールドが変更されているかチェック
+                var firstFileMeta = ReadFullMetadata(osuFiles[0]);
+                bool hasDiff =
+                    firstFileMeta.Artist != txtArtist.Text.Trim() ||
+                    firstFileMeta.RomanisedArtist != txtRomanisedArtist.Text.Trim() ||
+                    firstFileMeta.Title != txtTitle.Text.Trim() ||
+                    firstFileMeta.RomanisedTitle != txtRomanisedTitle.Text.Trim() ||
+                    firstFileMeta.Creator != txtCreator.Text.Trim() ||
+                    firstFileMeta.Source != txtSource.Text.Trim() ||
+                    firstFileMeta.Tags != txtNewTags.Text.Trim();
+
+                // 単体ファイルモードの場合、追加でチェック
+                if (!chkFolderMode.Checked)
+                {
+                    hasDiff |= firstFileMeta.Difficulty != txtDifficulty.Text.Trim() ||
+                               firstFileMeta.BGFile != txtBGFile.Text.Trim() ||
+                               firstFileMeta.BGPos != txtBGPos.Value;
+                }
+
+                if (hasDiff) updateTargetCount = osuFiles.Length;
+            }
+
+            if (updateTargetCount == 0)
+            {
+                MessageBox.Show("ファイルの内容に変更がありません。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var confirmResult = MessageBox.Show(
+                $"{updateTargetCount} 件の .osu ファイルを更新しますか？", "確認",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (confirmResult != DialogResult.OK) return;
+
+            try
+            {
+                if (chkBackup.Checked)
+                {
+                    string backupSubFolder = Path.Combine(backupDir, Path.GetFileName(selectedFolder) + "_" + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    foreach (var file in osuFiles)
+                    {
+                        string relPath = Path.GetRelativePath(selectedFolder, file);
+                        string backupPath = Path.Combine(backupSubFolder, relPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(backupPath)!);
+                        File.Copy(file, backupPath, true);
+                    }
+                }
+
+                List<string> updatedFiles = new List<string>();
+
+                if (chkEnableIndividualEdit.Checked && chkFolderMode.Checked)
+                {
+                    // 個別編集モード
+                    foreach (var item in diffItems.Where(i => i.IsEdited).ToList())
+                    {
+                        UpdateSingleFile(item.FilePath, item.EditedMetadata, item.OriginalMetadata);
+                        item.OriginalMetadata = item.EditedMetadata.Clone();
+                        item.IsEdited = false;
+                    }
+                    osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
+                    LoadDiffList(); // リストを再構築
+                }
+                else
+                {
+                    // 一括更新モード or 単体ファイルモード
+                    Metadata newMeta = new Metadata
+                    {
+                        Artist = txtArtist.Text.Trim(),
+                        RomanisedArtist = txtRomanisedArtist.Text.Trim(),
+                        Title = txtTitle.Text.Trim(),
+                        RomanisedTitle = txtRomanisedTitle.Text.Trim(),
+                        Creator = txtCreator.Text.Trim(),
+                        Source = txtSource.Text.Trim(),
+                        Tags = txtNewTags.Text.Trim(),
+                        // 以下は単体ファイルモードでのみ使用される
+                        Difficulty = txtDifficulty.Text.Trim(),
+                        BGFile = txtBGFile.Text.Trim(),
+                        BGPos = txtBGPos.Value
+                    };
+
+                    foreach (var file in osuFiles)
+                    {
+                        var originalMeta = ReadFullMetadata(file);
+                        updatedFiles.Add(UpdateSingleFile(file, newMeta, originalMeta));
+                    }
+                    osuFiles = updatedFiles.ToArray();
+                    LoadMetadata(); // UIを更新
+                    if (chkFolderMode.Checked) LoadDiffList();
+                }
+
+                MessageBox.Show("更新が完了しました。", "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("エラーが発生しました。\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                File.AppendAllText("error.log", $"[{DateTime.Now}] {ex.Message}\n{ex.StackTrace}\n");
+            }
+        }
+
+        // [修正] ファイル更新ロジックを別メソッドに分離
+        private string UpdateSingleFile(string filePath, Metadata newMeta, Metadata originalMeta)
+        {
+            string newRomanisedArtist = newMeta.RomanisedArtist;
+            string newRomanisedTitle = newMeta.RomanisedTitle;
+            string newCreator = newMeta.Creator;
+
+            // [修正] Difficulty, BGFile, BGPos はモードによって更新するかどうかを決定
+            bool canUpdateSpecifics = !chkFolderMode.Checked || chkEnableIndividualEdit.Checked;
+
+            string newDiffName = canUpdateSpecifics ? newMeta.Difficulty : originalMeta.Difficulty;
+            string newBgFile = canUpdateSpecifics ? newMeta.BGFile : originalMeta.BGFile;
+            decimal newBgPos = canUpdateSpecifics ? newMeta.BGPos : originalMeta.BGPos;
+
+            // ファイル名のリネーム
+            string newFilePath = RenameFileIfNeeded(
+                filePath,
+                originalMeta.RomanisedArtist, originalMeta.RomanisedTitle, originalMeta.Creator, originalMeta.Difficulty,
+                newRomanisedArtist, newRomanisedTitle, newCreator, newDiffName
+            );
+
+            var lines = File.ReadAllLines(newFilePath).ToList();
+
+            // メタデータ更新
+            UpdateLine(lines, "Artist:", newRomanisedArtist);
+            UpdateLine(lines, "ArtistUnicode:", newMeta.Artist);
+            UpdateLine(lines, "Title:", newRomanisedTitle);
+            UpdateLine(lines, "TitleUnicode:", newMeta.Title);
+            UpdateLine(lines, "Creator:", newCreator);
+            UpdateLine(lines, "Source:", newMeta.Source);
+            UpdateLine(lines, "Tags:", newMeta.Tags);
+            UpdateLine(lines, "Version:", newDiffName);
+
+            // 背景情報更新
+            int bgSectionIndex = lines.FindIndex(l => l.StartsWith("//Background and Video events"));
+            if (bgSectionIndex != -1 && bgSectionIndex + 1 < lines.Count)
+            {
+                var parts = lines[bgSectionIndex + 1].Split(',').ToList();
+                if (parts.Count >= 5 && (parts[0] == "0" || parts[0] == "Background"))
+                {
+                    parts[2] = $"\"{newBgFile}\"";
+                    parts[4] = newBgPos.ToString();
+                    lines[bgSectionIndex + 1] = string.Join(",", parts);
+                }
+            }
+
+            File.WriteAllLines(newFilePath, lines, Encoding.UTF8);
+            return newFilePath;
+        }
+
+        // [修正] 行を効率的に更新するためのヘルパーメソッド
+        private void UpdateLine(List<string> lines, string key, string value)
+        {
+            int index = lines.FindIndex(l => l.StartsWith(key));
+            if (index != -1)
+            {
+                // " " を削除し、キーと値を直接結合する
+                lines[index] = key + value;
+            }
         }
     }
 }

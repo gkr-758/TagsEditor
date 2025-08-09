@@ -18,3 +18,15 @@
    at System.IO.File.InternalReadAllLines(String path, Encoding encoding)
    at System.IO.File.ReadAllLines(String path)
    at TagsEditor.TagsEditor.btnUpdate_Click(Object sender, EventArgs e) in C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\MainForm.cs:line 237
+[2025/08/09 22:54:08] ファイル名、ディレクトリ名、またはボリューム ラベルの構文が間違っています。
+   at System.IO.FileSystem.MoveFile(String sourceFullPath, String destFullPath, Boolean overwrite)
+   at System.IO.File.Move(String sourceFileName, String destFileName, Boolean overwrite)
+   at System.IO.File.Move(String sourceFileName, String destFileName)
+   at TagsEditor.TagsEditor.RenameFileIfNeeded(String filePath, String oldRomanisedArtist, String oldRomanisedTitle, String oldCreator, String oldDiffName, String newRomanisedArtist, String newRomanisedTitle, String newCreator, String newDiffName) in C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\MainForm.cs:line 372
+   at TagsEditor.TagsEditor.btnUpdate_Click(Object sender, EventArgs e) in C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\MainForm.cs:line 597
+[2025/08/09 22:54:12] ファイル名、ディレクトリ名、またはボリューム ラベルの構文が間違っています。
+   at System.IO.FileSystem.MoveFile(String sourceFullPath, String destFullPath, Boolean overwrite)
+   at System.IO.File.Move(String sourceFileName, String destFileName, Boolean overwrite)
+   at System.IO.File.Move(String sourceFileName, String destFileName)
+   at TagsEditor.TagsEditor.RenameFileIfNeeded(String filePath, String oldRomanisedArtist, String oldRomanisedTitle, String oldCreator, String oldDiffName, String newRomanisedArtist, String newRomanisedTitle, String newCreator, String newDiffName) in C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\MainForm.cs:line 372
+   at TagsEditor.TagsEditor.btnUpdate_Click(Object sender, EventArgs e) in C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\MainForm.cs:line 597

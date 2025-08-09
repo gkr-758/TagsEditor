@@ -57,6 +57,10 @@
             this.txtBGFile = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkFolderMode = new System.Windows.Forms.CheckBox();
+            this.chkEnableIndividualEdit = new System.Windows.Forms.CheckBox();
+            this.lstDiffs = new System.Windows.Forms.ListBox();
+            this.txtDifficulty = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,7 +92,7 @@
             // NewTags
             // 
             this.NewTags.AutoSize = true;
-            this.NewTags.Location = new System.Drawing.Point(12, 273);
+            this.NewTags.Location = new System.Drawing.Point(12, 317);
             this.NewTags.Name = "NewTags";
             this.NewTags.Size = new System.Drawing.Size(30, 15);
             this.NewTags.TabIndex = 5;
@@ -96,16 +100,16 @@
             // 
             // txtNewTags
             // 
-            this.txtNewTags.Location = new System.Drawing.Point(12, 291);
+            this.txtNewTags.Location = new System.Drawing.Point(12, 335);
             this.txtNewTags.Name = "txtNewTags";
-            this.txtNewTags.Size = new System.Drawing.Size(388, 125);
+            this.txtNewTags.Size = new System.Drawing.Size(388, 138);
             this.txtNewTags.TabIndex = 6;
             this.txtNewTags.Text = "";
             // 
             // chkBackup
             // 
             this.chkBackup.AutoSize = true;
-            this.chkBackup.Location = new System.Drawing.Point(698, 272);
+            this.chkBackup.Location = new System.Drawing.Point(698, 330);
             this.chkBackup.Name = "chkBackup";
             this.chkBackup.Size = new System.Drawing.Size(140, 19);
             this.chkBackup.TabIndex = 7;
@@ -114,7 +118,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(474, 331);
+            this.btnUpdate.Location = new System.Drawing.Point(474, 388);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(388, 85);
             this.btnUpdate.TabIndex = 8;
@@ -123,7 +127,7 @@
             // 
             // btnOpenExeFolder
             // 
-            this.btnOpenExeFolder.Location = new System.Drawing.Point(474, 293);
+            this.btnOpenExeFolder.Location = new System.Drawing.Point(474, 350);
             this.btnOpenExeFolder.Name = "btnOpenExeFolder";
             this.btnOpenExeFolder.Size = new System.Drawing.Size(164, 32);
             this.btnOpenExeFolder.TabIndex = 9;
@@ -132,7 +136,7 @@
             // 
             // btnOpenBackupFolder
             // 
-            this.btnOpenBackupFolder.Location = new System.Drawing.Point(698, 293);
+            this.btnOpenBackupFolder.Location = new System.Drawing.Point(698, 350);
             this.btnOpenBackupFolder.Name = "btnOpenBackupFolder";
             this.btnOpenBackupFolder.Size = new System.Drawing.Size(164, 32);
             this.btnOpenBackupFolder.TabIndex = 10;
@@ -158,7 +162,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 97);
+            this.label3.Location = new System.Drawing.Point(13, 97);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 15);
             this.label3.TabIndex = 13;
@@ -222,7 +226,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 229);
+            this.label7.Location = new System.Drawing.Point(12, 273);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(43, 15);
             this.label7.TabIndex = 22;
@@ -230,7 +234,7 @@
             // 
             // txtSource
             // 
-            this.txtSource.Location = new System.Drawing.Point(12, 247);
+            this.txtSource.Location = new System.Drawing.Point(13, 291);
             this.txtSource.Name = "txtSource";
             this.txtSource.Size = new System.Drawing.Size(388, 23);
             this.txtSource.TabIndex = 23;
@@ -280,18 +284,57 @@
             // chkFolderMode
             // 
             this.chkFolderMode.AutoSize = true;
-            this.chkFolderMode.Location = new System.Drawing.Point(474, 272);
+            this.chkFolderMode.Location = new System.Drawing.Point(474, 330);
             this.chkFolderMode.Name = "chkFolderMode";
             this.chkFolderMode.Size = new System.Drawing.Size(147, 19);
             this.chkFolderMode.TabIndex = 29;
             this.chkFolderMode.Text = "フォルダモードを有効にする";
             this.chkFolderMode.UseVisualStyleBackColor = true;
             // 
+            // chkEnableIndividualEdit
+            // 
+            this.chkEnableIndividualEdit.AutoSize = true;
+            this.chkEnableIndividualEdit.Location = new System.Drawing.Point(474, 100);
+            this.chkEnableIndividualEdit.Name = "chkEnableIndividualEdit";
+            this.chkEnableIndividualEdit.Size = new System.Drawing.Size(160, 19);
+            this.chkEnableIndividualEdit.TabIndex = 30;
+            this.chkEnableIndividualEdit.Text = "個別編集モードを有効にする";
+            this.chkEnableIndividualEdit.UseVisualStyleBackColor = true;
+            // 
+            // lstDiffs
+            // 
+            this.lstDiffs.FormattingEnabled = true;
+            this.lstDiffs.ItemHeight = 15;
+            this.lstDiffs.Location = new System.Drawing.Point(474, 125);
+            this.lstDiffs.Name = "lstDiffs";
+            this.lstDiffs.Size = new System.Drawing.Size(388, 199);
+            this.lstDiffs.TabIndex = 31;
+            // 
+            // txtDifficulty
+            // 
+            this.txtDifficulty.Location = new System.Drawing.Point(12, 247);
+            this.txtDifficulty.Name = "txtDifficulty";
+            this.txtDifficulty.Size = new System.Drawing.Size(388, 23);
+            this.txtDifficulty.TabIndex = 32;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(12, 229);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(55, 15);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "Difficulty";
+            // 
             // TagsEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 423);
+            this.ClientSize = new System.Drawing.Size(874, 485);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.txtDifficulty);
+            this.Controls.Add(this.lstDiffs);
+            this.Controls.Add(this.chkEnableIndividualEdit);
             this.Controls.Add(this.chkFolderMode);
             this.Controls.Add(this.txtBGFile);
             this.Controls.Add(this.label9);
@@ -358,5 +401,9 @@
         private TextBox txtBGFile;
         private ToolTip toolTip1;
         private CheckBox chkFolderMode;
+        private ListBox lstDiffs;
+        private CheckBox chkEnableIndividualEdit;
+        private TextBox txtDifficulty;
+        private Label label10;
     }
 }
