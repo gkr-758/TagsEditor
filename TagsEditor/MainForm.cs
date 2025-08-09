@@ -763,5 +763,32 @@ namespace TagsEditor
                 lines[index] = key + value;
             }
         }
+        private void SwitchLanguage(string cultureName)
+        {
+            // 設定を保存
+            Properties.Settings.Default.Language = cultureName;
+            Properties.Settings.Default.Save();
+
+            // 再起動を促すメッセージ (これもリソース化するのが望ましい)
+            MessageBox.Show("Language settings will be applied after restarting the application.", "Restart required", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // アプリケーションを再起動する
+            Application.Restart();
+        }
+
+        private void 日本語ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SwitchLanguage("ja-JP");
+        }
+
+        private void englishToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SwitchLanguage("en-US");
+        }
+
+        private void TagsEditor_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

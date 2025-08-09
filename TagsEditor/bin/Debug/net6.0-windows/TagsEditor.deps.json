@@ -12,6 +12,14 @@
         },
         "runtime": {
           "TagsEditor.dll": {}
+        },
+        "resources": {
+          "ja-JP/TagsEditor.resources.dll": {
+            "locale": "ja-JP"
+          },
+          "ja/TagsEditor.resources.dll": {
+            "locale": "ja"
+          }
         }
       },
       "MetroModernUI/1.4.0": {

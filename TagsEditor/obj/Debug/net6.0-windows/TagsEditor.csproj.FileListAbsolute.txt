@@ -18,7 +18,6 @@ C:\Users\nichi\source\repos\osu! Metadata Checker\TagsEditor\TagsEditor\obj\Debu
 C:\Users\nichi\source\repos\osu! Metadata Checker\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.SelectOsuFileDialog.resources
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.csproj.AssemblyReference.cache
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.TagsEditor.resources
-C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.SelectOsuFileDialog.resources
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.csproj.GenerateResource.cache
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.AssemblyInfoInputs.cache
@@ -38,3 +37,10 @@ C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windo
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\MetroFramework.Fonts.dll
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\MetroFramework.dll
 C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.csproj.CopyComplete
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\ja\TagsEditor.resources.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.TagsEditor.ja.resources
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\ja\TagsEditor.resources.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\TagsEditor.TagsEditor.ja-JP.resources
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\TagsEditor.dll.config
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\bin\Debug\net6.0-windows\ja-JP\TagsEditor.resources.dll
+C:\Users\nichi\Source\Repos\gkr-758\TagsEditor\TagsEditor\obj\Debug\net6.0-windows\ja-JP\TagsEditor.resources.dll

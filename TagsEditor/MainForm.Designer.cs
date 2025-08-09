@@ -61,196 +61,132 @@
             this.lstDiffs = new System.Windows.Forms.ListBox();
             this.txtDifficulty = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.日本語ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(474, 9);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 15);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "ファイルパス";
             // 
             // txtFolderPath
             // 
-            this.txtFolderPath.Location = new System.Drawing.Point(474, 27);
+            resources.ApplyResources(this.txtFolderPath, "txtFolderPath");
             this.txtFolderPath.Name = "txtFolderPath";
-            this.txtFolderPath.Size = new System.Drawing.Size(307, 23);
-            this.txtFolderPath.TabIndex = 1;
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(787, 27);
+            resources.ApplyResources(this.btnBrowse, "btnBrowse");
             this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnBrowse.TabIndex = 2;
-            this.btnBrowse.Text = "参照";
             this.btnBrowse.UseVisualStyleBackColor = true;
             // 
             // NewTags
             // 
-            this.NewTags.AutoSize = true;
-            this.NewTags.Location = new System.Drawing.Point(12, 317);
+            resources.ApplyResources(this.NewTags, "NewTags");
             this.NewTags.Name = "NewTags";
-            this.NewTags.Size = new System.Drawing.Size(30, 15);
-            this.NewTags.TabIndex = 5;
-            this.NewTags.Text = "Tags";
             // 
             // txtNewTags
             // 
-            this.txtNewTags.Location = new System.Drawing.Point(12, 335);
+            resources.ApplyResources(this.txtNewTags, "txtNewTags");
             this.txtNewTags.Name = "txtNewTags";
-            this.txtNewTags.Size = new System.Drawing.Size(388, 138);
-            this.txtNewTags.TabIndex = 6;
-            this.txtNewTags.Text = "";
             // 
             // chkBackup
             // 
-            this.chkBackup.AutoSize = true;
-            this.chkBackup.Location = new System.Drawing.Point(698, 330);
+            resources.ApplyResources(this.chkBackup, "chkBackup");
             this.chkBackup.Name = "chkBackup";
-            this.chkBackup.Size = new System.Drawing.Size(140, 19);
-            this.chkBackup.TabIndex = 7;
-            this.chkBackup.Text = "バックアップを有効にする";
             this.chkBackup.UseVisualStyleBackColor = true;
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(474, 388);
+            resources.ApplyResources(this.btnUpdate, "btnUpdate");
             this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(388, 85);
-            this.btnUpdate.TabIndex = 8;
-            this.btnUpdate.Text = "更新";
             this.btnUpdate.UseVisualStyleBackColor = true;
             // 
             // btnOpenExeFolder
             // 
-            this.btnOpenExeFolder.Location = new System.Drawing.Point(474, 350);
+            resources.ApplyResources(this.btnOpenExeFolder, "btnOpenExeFolder");
             this.btnOpenExeFolder.Name = "btnOpenExeFolder";
-            this.btnOpenExeFolder.Size = new System.Drawing.Size(164, 32);
-            this.btnOpenExeFolder.TabIndex = 9;
-            this.btnOpenExeFolder.Text = "実行ファイルのフォルダを開く";
             this.btnOpenExeFolder.UseVisualStyleBackColor = true;
             // 
             // btnOpenBackupFolder
             // 
-            this.btnOpenBackupFolder.Location = new System.Drawing.Point(698, 350);
+            resources.ApplyResources(this.btnOpenBackupFolder, "btnOpenBackupFolder");
             this.btnOpenBackupFolder.Name = "btnOpenBackupFolder";
-            this.btnOpenBackupFolder.Size = new System.Drawing.Size(164, 32);
-            this.btnOpenBackupFolder.TabIndex = 10;
-            this.btnOpenBackupFolder.Text = "バックアップフォルダを開く";
             this.btnOpenBackupFolder.UseVisualStyleBackColor = true;
             // 
             // txtRomanisedTitle
             // 
-            this.txtRomanisedTitle.Location = new System.Drawing.Point(12, 159);
+            resources.ApplyResources(this.txtRomanisedTitle, "txtRomanisedTitle");
             this.txtRomanisedTitle.Name = "txtRomanisedTitle";
-            this.txtRomanisedTitle.Size = new System.Drawing.Size(388, 23);
-            this.txtRomanisedTitle.TabIndex = 11;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 141);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 15);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Romanised Title";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 97);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 15);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Title";
             // 
             // txtTitle
             // 
-            this.txtTitle.Location = new System.Drawing.Point(12, 115);
+            resources.ApplyResources(this.txtTitle, "txtTitle");
             this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(388, 23);
-            this.txtTitle.TabIndex = 14;
             // 
             // txtRomanisedArtist
             // 
-            this.txtRomanisedArtist.Location = new System.Drawing.Point(12, 71);
+            resources.ApplyResources(this.txtRomanisedArtist, "txtRomanisedArtist");
             this.txtRomanisedArtist.Name = "txtRomanisedArtist";
-            this.txtRomanisedArtist.Size = new System.Drawing.Size(388, 23);
-            this.txtRomanisedArtist.TabIndex = 15;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 53);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 15);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "Romanised Artist";
             // 
             // txtArtist
             // 
-            this.txtArtist.Location = new System.Drawing.Point(12, 27);
+            resources.ApplyResources(this.txtArtist, "txtArtist");
             this.txtArtist.Name = "txtArtist";
-            this.txtArtist.Size = new System.Drawing.Size(388, 23);
-            this.txtArtist.TabIndex = 17;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 9);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(35, 15);
-            this.label5.TabIndex = 18;
-            this.label5.Text = "Artist";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 185);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 15);
-            this.label6.TabIndex = 20;
-            this.label6.Text = "Beatmap Creator";
             // 
             // txtCreator
             // 
-            this.txtCreator.Location = new System.Drawing.Point(12, 203);
+            resources.ApplyResources(this.txtCreator, "txtCreator");
             this.txtCreator.Name = "txtCreator";
-            this.txtCreator.Size = new System.Drawing.Size(388, 23);
-            this.txtCreator.TabIndex = 21;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 273);
+            resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 15);
-            this.label7.TabIndex = 22;
-            this.label7.Text = "Source";
             // 
             // txtSource
             // 
-            this.txtSource.Location = new System.Drawing.Point(13, 291);
+            resources.ApplyResources(this.txtSource, "txtSource");
             this.txtSource.Name = "txtSource";
-            this.txtSource.Size = new System.Drawing.Size(388, 23);
-            this.txtSource.TabIndex = 23;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(698, 53);
+            resources.ApplyResources(this.label8, "label8");
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(68, 15);
-            this.label8.TabIndex = 24;
-            this.label8.Text = "BG Position";
             // 
             // txtBGPos
             // 
-            this.txtBGPos.Location = new System.Drawing.Point(698, 71);
+            resources.ApplyResources(this.txtBGPos, "txtBGPos");
             this.txtBGPos.Maximum = new decimal(new int[] {
             2000,
             0,
@@ -262,75 +198,76 @@
             0,
             -2147483648});
             this.txtBGPos.Name = "txtBGPos";
-            this.txtBGPos.Size = new System.Drawing.Size(164, 23);
-            this.txtBGPos.TabIndex = 26;
             // 
             // label9
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(474, 53);
+            resources.ApplyResources(this.label9, "label9");
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(77, 15);
-            this.label9.TabIndex = 27;
-            this.label9.Text = "BG File Name";
             // 
             // txtBGFile
             // 
-            this.txtBGFile.Location = new System.Drawing.Point(474, 71);
+            resources.ApplyResources(this.txtBGFile, "txtBGFile");
             this.txtBGFile.Name = "txtBGFile";
-            this.txtBGFile.Size = new System.Drawing.Size(164, 23);
-            this.txtBGFile.TabIndex = 28;
             // 
             // chkFolderMode
             // 
-            this.chkFolderMode.AutoSize = true;
-            this.chkFolderMode.Location = new System.Drawing.Point(474, 330);
+            resources.ApplyResources(this.chkFolderMode, "chkFolderMode");
             this.chkFolderMode.Name = "chkFolderMode";
-            this.chkFolderMode.Size = new System.Drawing.Size(147, 19);
-            this.chkFolderMode.TabIndex = 29;
-            this.chkFolderMode.Text = "フォルダモードを有効にする";
             this.chkFolderMode.UseVisualStyleBackColor = true;
             // 
             // chkEnableIndividualEdit
             // 
-            this.chkEnableIndividualEdit.AutoSize = true;
-            this.chkEnableIndividualEdit.Location = new System.Drawing.Point(474, 100);
+            resources.ApplyResources(this.chkEnableIndividualEdit, "chkEnableIndividualEdit");
             this.chkEnableIndividualEdit.Name = "chkEnableIndividualEdit";
-            this.chkEnableIndividualEdit.Size = new System.Drawing.Size(160, 19);
-            this.chkEnableIndividualEdit.TabIndex = 30;
-            this.chkEnableIndividualEdit.Text = "個別編集モードを有効にする";
             this.chkEnableIndividualEdit.UseVisualStyleBackColor = true;
             // 
             // lstDiffs
             // 
             this.lstDiffs.FormattingEnabled = true;
-            this.lstDiffs.ItemHeight = 15;
-            this.lstDiffs.Location = new System.Drawing.Point(474, 125);
+            resources.ApplyResources(this.lstDiffs, "lstDiffs");
             this.lstDiffs.Name = "lstDiffs";
-            this.lstDiffs.Size = new System.Drawing.Size(388, 199);
-            this.lstDiffs.TabIndex = 31;
             // 
             // txtDifficulty
             // 
-            this.txtDifficulty.Location = new System.Drawing.Point(12, 247);
+            resources.ApplyResources(this.txtDifficulty, "txtDifficulty");
             this.txtDifficulty.Name = "txtDifficulty";
-            this.txtDifficulty.Size = new System.Drawing.Size(388, 23);
-            this.txtDifficulty.TabIndex = 32;
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(12, 229);
+            resources.ApplyResources(this.label10, "label10");
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(55, 15);
-            this.label10.TabIndex = 33;
-            this.label10.Text = "Difficulty";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.languageToolStripMenuItem});
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
+            this.menuStrip1.Name = "menuStrip1";
+            // 
+            // languageToolStripMenuItem
+            // 
+            this.languageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.日本語ToolStripMenuItem,
+            this.englishToolStripMenuItem});
+            this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
+            resources.ApplyResources(this.languageToolStripMenuItem, "languageToolStripMenuItem");
+            // 
+            // 日本語ToolStripMenuItem
+            // 
+            this.日本語ToolStripMenuItem.Name = "日本語ToolStripMenuItem";
+            resources.ApplyResources(this.日本語ToolStripMenuItem, "日本語ToolStripMenuItem");
+            this.日本語ToolStripMenuItem.Click += new System.EventHandler(this.日本語ToolStripMenuItem_Click);
+            // 
+            // englishToolStripMenuItem
+            // 
+            this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
+            resources.ApplyResources(this.englishToolStripMenuItem, "englishToolStripMenuItem");
+            this.englishToolStripMenuItem.Click += new System.EventHandler(this.englishToolStripMenuItem_Click);
             // 
             // TagsEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 485);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.txtDifficulty);
             this.Controls.Add(this.lstDiffs);
@@ -361,12 +298,16 @@
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.txtFolderPath);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "TagsEditor";
+            this.Load += new System.EventHandler(this.TagsEditor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -405,5 +346,9 @@
         private CheckBox chkEnableIndividualEdit;
         private TextBox txtDifficulty;
         private Label label10;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem languageToolStripMenuItem;
+        private ToolStripMenuItem 日本語ToolStripMenuItem;
+        private ToolStripMenuItem englishToolStripMenuItem;
     }
 }
