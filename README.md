@@ -1,22 +1,23 @@
 # TagsEditor
 .osuファイルのTagsをフォルダ単位で指定し一括で変更するツール。
 
-いつの間にかMetadata全般とBG系も変更できるようになりました。
+いつの間にかmetadata全般とBG系も変更できるようになりました。
 
-![Screenshot](http://sharex.underuri.dev/u/TagsEditor_aWhwtCAULt.png)
+![Screenshot](http://sharex.underuri.dev/u/TagsEditor_wylEv9pADJ.png)
 
 ## 使い方
-見ればわかる
+右上の参照を押し、*.osuファイルを選択するとmetadataを編集することが出来ます。
 
-ファイル名に関するデータを変更した際は、ファイル名も変わるようになっています。
+右下の更新ボタンで保存が出来ます。osu!を起動している時に正しく更新されると、ゲーム内でF5を押すことによって簡易更新されすぐに反映されます。
 
-Diff間でタグの内容が異なる場合は、参照する*.osuを選択できるようになっています。
+フォルダモードを有効にすると、参照を押下した際にフォルダ単位で読み込むことが出来ます。
 
-![Screenshot2](http://sharex.underuri.dev/u/TagsEditor_1DFRVZismi.png)
+for Rankedを作っている際に、一気にmetadataやBGの位置を調節したい時に活用してください。
 
-Enable Backupにチェックを入れると実行ファイルと同じディレクトリにBackupフォルダが生成され、その中に変更前の*.osuファイルがバックアップされるようになっています。
+フォルダモードを有効にした上で個別編集モードを有効にすると、フォルダ内のdiffごとにmetadataを編集することが出来ます。
 
-## ダウンロード
-Actionsからダウンロードしてください。（Releaseのところは無視してください）なんか勝手にビルドしてくれるらしい
+マップパックなどにご活用ください。
 
-![Actions](http://sharex.underuri.dev/u/chrome_53DK0RuNgM.png)
+バックアップを有効にすると、実行ファイルと同じディレクトリにBackupフォルダが生成され、その中に変更前の*.osuファイルがバックアップされるようになっています。
+
+左上のLanguageから言語を変更できます。（日本語、English）
