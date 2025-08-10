@@ -3642,7 +3642,7 @@
     <value>Backupフォルダを開く際にエラーが発生しました。</value>
   </data>
   <data name="BGNullWarn" xml:space="preserve">
-    <value>BGファイル名が空欄です。\n続行しますか？</value>
+    <value>BGファイル名が空欄です。続行しますか？</value>
   </data>
   <data name="BGTextWarn" xml:space="preserve">
     <value>BGファイル名の拡張子を検知出来ませんでした。続行しますか？</value>
@@ -3694,5 +3694,8 @@
   </data>
   <data name="WarnTitle" xml:space="preserve">
     <value>警告</value>
+  </data>
+  <data name="btnuseUpdate.Text" xml:space="preserve">
+    <value>自動更新の有効化 (Experimental)</value>
   </data>
 </root>

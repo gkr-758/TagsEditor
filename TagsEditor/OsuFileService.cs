@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;   
 using System.Linq;
 using System.Text;
 
@@ -10,6 +11,82 @@ namespace TagsEditor
     public class OsuFileService
     {
         private readonly string _backupDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Backup");
+
+        public void ProcessBeatmapUpdate(string selectedFolder, string[] osuFiles, Metadata newMeta, bool isFolderMode, bool isIndividualEdit, bool useAutoUpdate)
+        {
+            CreateBackup(selectedFolder, osuFiles);
+
+            if (useAutoUpdate && !string.IsNullOrEmpty(selectedFolder))
+            {
+                CreateAndExecuteOsz(selectedFolder, newMeta, isFolderMode, isIndividualEdit);
+            }
+            else
+            {
+                foreach (var file in osuFiles)
+                {
+                    var originalMeta = ReadFullMetadata(file);
+                    UpdateSingleFile(file, newMeta, originalMeta, isFolderMode, isIndividualEdit);
+                }
+
+                string refreshDir = !string.IsNullOrEmpty(selectedFolder)
+                    ? selectedFolder
+                    : (osuFiles.Length > 0 ? Path.GetDirectoryName(osuFiles[0]) : null);
+
+                if (refreshDir != null)
+                {
+                    TriggerOsuFileRefresh(refreshDir);
+                }
+            }
+        }
+
+        private void CreateAndExecuteOsz(string selectedFolder, Metadata newMeta, bool isFolderMode, bool isIndividualEdit)
+        {
+            string tempWorkingDir = Path.Combine(Path.GetTempPath(), "TagsEditor_" + Guid.NewGuid().ToString());
+            string tempBeatmapDir = Path.Combine(tempWorkingDir, Path.GetFileName(selectedFolder));
+            Directory.CreateDirectory(tempBeatmapDir);
+
+            var originalOsuFiles = Directory.GetFiles(selectedFolder, "*.osu");
+            var originalMetadataMap = new Dictionary<string, Metadata>();
+            foreach (var file in originalOsuFiles)
+            {
+                originalMetadataMap[Path.GetFileName(file)] = ReadFullMetadata(file);
+            }
+
+            try
+            {
+                foreach (var filePath in Directory.GetFiles(selectedFolder))
+                {
+                    var fileName = Path.GetFileName(filePath);
+                    File.Copy(filePath, Path.Combine(tempBeatmapDir, fileName));
+                }
+
+                foreach (var osuFile in originalOsuFiles)
+                {
+                    File.Delete(osuFile);
+                }
+
+                var tempOsuFiles = Directory.GetFiles(tempBeatmapDir, "*.osu");
+                foreach (var tempOsuFile in tempOsuFiles)
+                {
+                    string fileName = Path.GetFileName(tempOsuFile);
+                    if (originalMetadataMap.TryGetValue(fileName, out Metadata originalMeta))
+                    {
+                        UpdateSingleFile(tempOsuFile, newMeta, originalMeta, isFolderMode, isIndividualEdit);
+                    }
+                }
+
+                string oszPath = Path.Combine(tempWorkingDir, Path.GetFileName(selectedFolder) + ".osz");
+                ZipFile.CreateFromDirectory(tempBeatmapDir, oszPath);
+
+                Process.Start(new ProcessStartInfo(oszPath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to create and execute .osz file: {ex.Message}");
+                throw;  
+            }
+        }
+
 
         public Metadata ReadFullMetadata(string filePath)
         {
@@ -153,7 +230,7 @@ namespace TagsEditor
                 oldMeta.Creator == newCreator &&
                 oldMeta.Difficulty == newDiffName)
             {
-                return filePath;  
+                return filePath;
             }
 
             string dir = Path.GetDirectoryName(filePath)!;

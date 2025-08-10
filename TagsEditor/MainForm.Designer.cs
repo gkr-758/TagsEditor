@@ -65,6 +65,8 @@
             this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.日本語ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnuseUpdate = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -240,7 +242,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.languageToolStripMenuItem});
+            this.languageToolStripMenuItem,
+            this.settingsToolStripMenuItem1});
             resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
@@ -263,6 +266,20 @@
             this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
             resources.ApplyResources(this.englishToolStripMenuItem, "englishToolStripMenuItem");
             this.englishToolStripMenuItem.Click += new System.EventHandler(this.englishToolStripMenuItem_Click);
+            // 
+            // settingsToolStripMenuItem1
+            // 
+            this.settingsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnuseUpdate});
+            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
+            resources.ApplyResources(this.settingsToolStripMenuItem1, "settingsToolStripMenuItem1");
+            // 
+            // btnuseUpdate
+            // 
+            this.btnuseUpdate.CheckOnClick = true;
+            this.btnuseUpdate.Name = "btnuseUpdate";
+            resources.ApplyResources(this.btnuseUpdate, "btnuseUpdate");
+            this.btnuseUpdate.Click += new System.EventHandler(this.btnuseUpdate_Click);
             // 
             // TagsEditor
             // 
@@ -350,5 +367,7 @@
         private ToolStripMenuItem languageToolStripMenuItem;
         private ToolStripMenuItem 日本語ToolStripMenuItem;
         private ToolStripMenuItem englishToolStripMenuItem;
+        private ToolStripMenuItem settingsToolStripMenuItem1;
+        private ToolStripMenuItem btnuseUpdate;
     }
 }

@@ -222,32 +222,52 @@ namespace TagsEditor
             }
             if (!ValidateInputs()) return;
 
-            int updateTargetCount = CalculateUpdateTargetCount();
-            if (updateTargetCount == 0)
+            if (!chkEnableIndividualEdit.Checked)
             {
-                MessageBox.Show(resources.GetString("notUpdateError"), resources.GetString("InfoTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string message = string.Format(resources.GetString("osuFUpdate"), updateTargetCount);
-            var confirmResult = MessageBox.Show(message, resources.GetString("updateTitle"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            if (confirmResult != DialogResult.OK) return;
-
-            try
-            {
-                if (chkBackup.Checked)
+                int updateTargetCount = CalculateUpdateTargetCount();
+                if (updateTargetCount == 0)
                 {
-                    _osuService.CreateBackup(selectedFolder, osuFiles);
+                    MessageBox.Show(resources.GetString("notUpdateError"), resources.GetString("InfoTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
 
-                ExecuteUpdate();
+                string message = string.Format(resources.GetString("osuFUpdate"), updateTargetCount);
+                var confirmResult = MessageBox.Show(message, resources.GetString("updateTitle"), MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (confirmResult != DialogResult.OK) return;
+            }
+            try
+            {
+                var newMeta = new Metadata
+                {
+                    Artist = txtArtist.Text.Trim(),
+                    RomanisedArtist = txtRomanisedArtist.Text.Trim(),
+                    Title = txtTitle.Text.Trim(),
+                    RomanisedTitle = txtRomanisedTitle.Text.Trim(),
+                    Creator = txtCreator.Text.Trim(),
+                    Source = txtSource.Text.Trim(),
+                    Tags = txtNewTags.Text.Trim(),
+                    Difficulty = txtDifficulty.Text.Trim(),  
+                    BGFile = txtBGFile.Text.Trim(),        
+                    BGPos = txtBGPos.Value                 
+                };
+
+                _osuService.ProcessBeatmapUpdate(
+                    selectedFolder,
+                    osuFiles,
+                    newMeta,
+                    chkFolderMode.Checked,
+                    chkEnableIndividualEdit.Checked,
+                    btnuseUpdate.Checked   
+                );
 
                 MessageBox.Show(resources.GetString("UpdateOK"), resources.GetString("OKTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 if (Directory.Exists(selectedFolder))
                 {
-                    _osuService.TriggerOsuFileRefresh(selectedFolder);
+                    osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
                 }
+                LoadMetadata();
+                LoadDiffList();
             }
             catch (IOException ex) when (ex.Message == "Exists")
             {
@@ -481,9 +501,9 @@ namespace TagsEditor
             else
             {
                 string lower = txtBGFile.Text.ToLower();
-                if (!(lower.EndsWith(".jpg") || lower.EndsWith(".png")))
+                if (!(lower.EndsWith(".jpg") || lower.EndsWith(".png") || lower.EndsWith(".jpeg")))
                 {
-                    var extResult = MessageBox.Show(resources.GetString("BGExtWarn"), resources.GetString("WarnTitle"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    var extResult = MessageBox.Show(resources.GetString("BGTextWarn"), resources.GetString("WarnTitle"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (extResult != DialogResult.Yes) return false;
                 }
             }
@@ -576,6 +596,20 @@ namespace TagsEditor
                 {
                     this.StartPosition = FormStartPosition.CenterScreen;
                 }
+            }
+        }
+
+        private void btnuseUpdate_Click(object sender, EventArgs e)
+        {
+            if (btnuseUpdate.Checked)
+            {
+                chkBackup.Checked = true;
+
+                chkBackup.Enabled = false;
+            }
+            else
+            {
+                chkBackup.Enabled = true;
             }
         }
     }
