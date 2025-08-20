@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TagsEditor
 {
@@ -18,6 +14,12 @@ namespace TagsEditor
         public string Difficulty { get; set; } = "";
         public string BGFile { get; set; } = "";
         public decimal BGPos { get; set; } = 0;
+
+        // Video関連
+        public string VideoFileName { get; set; } = "";
+        public decimal VideoStartTime { get; set; } = 0;
+        public decimal VideoXOffset { get; set; } = 0;
+        public decimal VideoYOffset { get; set; } = 0;
 
         public Metadata Clone()
         {
@@ -36,7 +38,11 @@ namespace TagsEditor
                    Tags == other.Tags &&
                    Difficulty == other.Difficulty &&
                    BGFile == other.BGFile &&
-                   BGPos == other.BGPos;
+                   BGPos == other.BGPos &&
+                   VideoFileName == other.VideoFileName &&
+                   VideoStartTime == other.VideoStartTime &&
+                   VideoXOffset == other.VideoXOffset &&
+                   VideoYOffset == other.VideoYOffset;
         }
     }
 }

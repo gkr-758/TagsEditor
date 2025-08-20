@@ -62,13 +62,24 @@
             this.txtDifficulty = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.languageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.日本語ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.languageToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.JapaneseCheck = new System.Windows.Forms.ToolStripMenuItem();
+            this.EnglishCheck = new System.Windows.Forms.ToolStripMenuItem();
             this.btnuseUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtVDFile = new System.Windows.Forms.TextBox();
+            this.txtVDPos = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtVDxO = new System.Windows.Forms.NumericUpDown();
+            this.txtVDyO = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtVDPos)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtVDxO)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtVDyO)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -242,37 +253,37 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.languageToolStripMenuItem,
             this.settingsToolStripMenuItem1});
             resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
-            // languageToolStripMenuItem
-            // 
-            this.languageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.日本語ToolStripMenuItem,
-            this.englishToolStripMenuItem});
-            this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            resources.ApplyResources(this.languageToolStripMenuItem, "languageToolStripMenuItem");
-            // 
-            // 日本語ToolStripMenuItem
-            // 
-            this.日本語ToolStripMenuItem.Name = "日本語ToolStripMenuItem";
-            resources.ApplyResources(this.日本語ToolStripMenuItem, "日本語ToolStripMenuItem");
-            this.日本語ToolStripMenuItem.Click += new System.EventHandler(this.日本語ToolStripMenuItem_Click);
-            // 
-            // englishToolStripMenuItem
-            // 
-            this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
-            resources.ApplyResources(this.englishToolStripMenuItem, "englishToolStripMenuItem");
-            this.englishToolStripMenuItem.Click += new System.EventHandler(this.englishToolStripMenuItem_Click);
-            // 
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.languageToolStripMenuItem1,
             this.btnuseUpdate});
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
             resources.ApplyResources(this.settingsToolStripMenuItem1, "settingsToolStripMenuItem1");
+            // 
+            // languageToolStripMenuItem1
+            // 
+            this.languageToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.JapaneseCheck,
+            this.EnglishCheck});
+            this.languageToolStripMenuItem1.Name = "languageToolStripMenuItem1";
+            resources.ApplyResources(this.languageToolStripMenuItem1, "languageToolStripMenuItem1");
+            // 
+            // JapaneseCheck
+            // 
+            this.JapaneseCheck.Name = "JapaneseCheck";
+            resources.ApplyResources(this.JapaneseCheck, "JapaneseCheck");
+            this.JapaneseCheck.Click += new System.EventHandler(this.JapaneseCheck_Click_1);
+            // 
+            // EnglishCheck
+            // 
+            this.EnglishCheck.Name = "EnglishCheck";
+            resources.ApplyResources(this.EnglishCheck, "EnglishCheck");
+            this.EnglishCheck.Click += new System.EventHandler(this.EnglishCheck_Click_1);
             // 
             // btnuseUpdate
             // 
@@ -281,10 +292,78 @@
             resources.ApplyResources(this.btnuseUpdate, "btnuseUpdate");
             this.btnuseUpdate.Click += new System.EventHandler(this.btnuseUpdate_Click);
             // 
+            // label11
+            // 
+            resources.ApplyResources(this.label11, "label11");
+            this.label11.Name = "label11";
+            // 
+            // label12
+            // 
+            resources.ApplyResources(this.label12, "label12");
+            this.label12.Name = "label12";
+            // 
+            // txtVDFile
+            // 
+            resources.ApplyResources(this.txtVDFile, "txtVDFile");
+            this.txtVDFile.Name = "txtVDFile";
+            // 
+            // txtVDPos
+            // 
+            resources.ApplyResources(this.txtVDPos, "txtVDPos");
+            this.txtVDPos.Name = "txtVDPos";
+            // 
+            // label13
+            // 
+            resources.ApplyResources(this.label13, "label13");
+            this.label13.Name = "label13";
+            // 
+            // label14
+            // 
+            resources.ApplyResources(this.label14, "label14");
+            this.label14.Name = "label14";
+            // 
+            // txtVDxO
+            // 
+            resources.ApplyResources(this.txtVDxO, "txtVDxO");
+            this.txtVDxO.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.txtVDxO.Minimum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            -2147483648});
+            this.txtVDxO.Name = "txtVDxO";
+            // 
+            // txtVDyO
+            // 
+            resources.ApplyResources(this.txtVDyO, "txtVDyO");
+            this.txtVDyO.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.txtVDyO.Minimum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            -2147483648});
+            this.txtVDyO.Name = "txtVDyO";
+            // 
             // TagsEditor
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = AutoScaleMode.None;
+            this.Controls.Add(this.txtVDyO);
+            this.Controls.Add(this.txtVDxO);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.txtVDPos);
+            this.Controls.Add(this.txtVDFile);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.txtDifficulty);
             this.Controls.Add(this.lstDiffs);
@@ -325,6 +404,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtBGPos)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtVDPos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtVDxO)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtVDyO)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -364,10 +446,18 @@
         private TextBox txtDifficulty;
         private Label label10;
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem languageToolStripMenuItem;
-        private ToolStripMenuItem 日本語ToolStripMenuItem;
-        private ToolStripMenuItem englishToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem1;
         private ToolStripMenuItem btnuseUpdate;
+        private ToolStripMenuItem languageToolStripMenuItem1;
+        private ToolStripMenuItem JapaneseCheck;
+        private ToolStripMenuItem EnglishCheck;
+        private Label label11;
+        private Label label12;
+        private TextBox txtVDFile;
+        private NumericUpDown txtVDPos;
+        private Label label13;
+        private Label label14;
+        private NumericUpDown txtVDxO;
+        private NumericUpDown txtVDyO;
     }
 }

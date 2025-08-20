@@ -117,20 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 9</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>52, 15</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>ファイルパス</value>
   </data>
@@ -146,15 +132,6 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>29</value>
   </data>
-  <data name="txtFolderPath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 27</value>
-  </data>
-  <data name="txtFolderPath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>307, 23</value>
-  </data>
-  <data name="txtFolderPath.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
   <data name="&gt;&gt;txtFolderPath.Name" xml:space="preserve">
     <value>txtFolderPath</value>
   </data>
@@ -166,15 +143,6 @@
   </data>
   <data name="&gt;&gt;txtFolderPath.ZOrder" xml:space="preserve">
     <value>28</value>
-  </data>
-  <data name="btnBrowse.Location" type="System.Drawing.Point, System.Drawing">
-    <value>787, 27</value>
-  </data>
-  <data name="btnBrowse.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="btnBrowse.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
   </data>
   <data name="btnBrowse.Text" xml:space="preserve">
     <value>参照</value>
@@ -191,18 +159,6 @@
   <data name="&gt;&gt;btnBrowse.ZOrder" xml:space="preserve">
     <value>27</value>
   </data>
-  <data name="NewTags.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="NewTags.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 317</value>
-  </data>
-  <data name="NewTags.Size" type="System.Drawing.Size, System.Drawing">
-    <value>30, 15</value>
-  </data>
-  <data name="NewTags.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
   <data name="NewTags.Text" xml:space="preserve">
     <value>Tags</value>
   </data>
@@ -217,15 +173,6 @@
   </data>
   <data name="&gt;&gt;NewTags.ZOrder" xml:space="preserve">
     <value>26</value>
-  </data>
-  <data name="txtNewTags.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 335</value>
-  </data>
-  <data name="txtNewTags.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 138</value>
-  </data>
-  <data name="txtNewTags.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
   </data>
   <data name="txtNewTags.Text" xml:space="preserve">
     <value />
@@ -242,18 +189,6 @@
   <data name="&gt;&gt;txtNewTags.ZOrder" xml:space="preserve">
     <value>25</value>
   </data>
-  <data name="chkBackup.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="chkBackup.Location" type="System.Drawing.Point, System.Drawing">
-    <value>698, 330</value>
-  </data>
-  <data name="chkBackup.Size" type="System.Drawing.Size, System.Drawing">
-    <value>108, 19</value>
-  </data>
-  <data name="chkBackup.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
   <data name="chkBackup.Text" xml:space="preserve">
     <value>バックアップを有効にする</value>
   </data>
@@ -268,15 +203,6 @@
   </data>
   <data name="&gt;&gt;chkBackup.ZOrder" xml:space="preserve">
     <value>24</value>
-  </data>
-  <data name="btnUpdate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 388</value>
-  </data>
-  <data name="btnUpdate.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 85</value>
-  </data>
-  <data name="btnUpdate.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
   </data>
   <data name="btnUpdate.Text" xml:space="preserve">
     <value>更新</value>
@@ -293,15 +219,6 @@
   <data name="&gt;&gt;btnUpdate.ZOrder" xml:space="preserve">
     <value>23</value>
   </data>
-  <data name="btnOpenExeFolder.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 350</value>
-  </data>
-  <data name="btnOpenExeFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 32</value>
-  </data>
-  <data name="btnOpenExeFolder.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
-  </data>
   <data name="btnOpenExeFolder.Text" xml:space="preserve">
     <value>実行ファイルのフォルダを開く</value>
   </data>
@@ -316,15 +233,6 @@
   </data>
   <data name="&gt;&gt;btnOpenExeFolder.ZOrder" xml:space="preserve">
     <value>22</value>
-  </data>
-  <data name="btnOpenBackupFolder.Location" type="System.Drawing.Point, System.Drawing">
-    <value>698, 350</value>
-  </data>
-  <data name="btnOpenBackupFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 32</value>
-  </data>
-  <data name="btnOpenBackupFolder.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
   </data>
   <data name="btnOpenBackupFolder.Text" xml:space="preserve">
     <value>バックアップフォルダを開く</value>
@@ -341,15 +249,6 @@
   <data name="&gt;&gt;btnOpenBackupFolder.ZOrder" xml:space="preserve">
     <value>21</value>
   </data>
-  <data name="txtRomanisedTitle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 159</value>
-  </data>
-  <data name="txtRomanisedTitle.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtRomanisedTitle.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
   <data name="&gt;&gt;txtRomanisedTitle.Name" xml:space="preserve">
     <value>txtRomanisedTitle</value>
   </data>
@@ -361,18 +260,6 @@
   </data>
   <data name="&gt;&gt;txtRomanisedTitle.ZOrder" xml:space="preserve">
     <value>20</value>
-  </data>
-  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 141</value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 15</value>
-  </data>
-  <data name="label2.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Romanised Title</value>
@@ -389,18 +276,6 @@
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>19</value>
   </data>
-  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 97</value>
-  </data>
-  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 15</value>
-  </data>
-  <data name="label3.TabIndex" type="System.Int32, mscorlib">
-    <value>13</value>
-  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>Title</value>
   </data>
@@ -416,15 +291,6 @@
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>18</value>
   </data>
-  <data name="txtTitle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 115</value>
-  </data>
-  <data name="txtTitle.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtTitle.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
   <data name="&gt;&gt;txtTitle.Name" xml:space="preserve">
     <value>txtTitle</value>
   </data>
@@ -437,15 +303,6 @@
   <data name="&gt;&gt;txtTitle.ZOrder" xml:space="preserve">
     <value>17</value>
   </data>
-  <data name="txtRomanisedArtist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 71</value>
-  </data>
-  <data name="txtRomanisedArtist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtRomanisedArtist.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
   <data name="&gt;&gt;txtRomanisedArtist.Name" xml:space="preserve">
     <value>txtRomanisedArtist</value>
   </data>
@@ -456,18 +313,6 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;txtRomanisedArtist.ZOrder" xml:space="preserve">
-    <value>16</value>
-  </data>
-  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 53</value>
-  </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 15</value>
-  </data>
-  <data name="label4.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
@@ -485,15 +330,6 @@
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
     <value>15</value>
   </data>
-  <data name="txtArtist.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 27</value>
-  </data>
-  <data name="txtArtist.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtArtist.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
-  </data>
   <data name="&gt;&gt;txtArtist.Name" xml:space="preserve">
     <value>txtArtist</value>
   </data>
@@ -505,18 +341,6 @@
   </data>
   <data name="&gt;&gt;txtArtist.ZOrder" xml:space="preserve">
     <value>14</value>
-  </data>
-  <data name="label5.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 9</value>
-  </data>
-  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 15</value>
-  </data>
-  <data name="label5.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Artist</value>
@@ -533,18 +357,6 @@
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
-  <data name="label6.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 185</value>
-  </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>94, 15</value>
-  </data>
-  <data name="label6.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
-  </data>
   <data name="label6.Text" xml:space="preserve">
     <value>Beatmap Creator</value>
   </data>
@@ -560,15 +372,6 @@
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="txtCreator.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 203</value>
-  </data>
-  <data name="txtCreator.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtCreator.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
   <data name="&gt;&gt;txtCreator.Name" xml:space="preserve">
     <value>txtCreator</value>
   </data>
@@ -580,18 +383,6 @@
   </data>
   <data name="&gt;&gt;txtCreator.ZOrder" xml:space="preserve">
     <value>11</value>
-  </data>
-  <data name="label7.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 273</value>
-  </data>
-  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>43, 15</value>
-  </data>
-  <data name="label7.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>Source</value>
@@ -608,15 +399,6 @@
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
     <value>10</value>
   </data>
-  <data name="txtSource.Location" type="System.Drawing.Point, System.Drawing">
-    <value>13, 291</value>
-  </data>
-  <data name="txtSource.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtSource.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
   <data name="&gt;&gt;txtSource.Name" xml:space="preserve">
     <value>txtSource</value>
   </data>
@@ -628,18 +410,6 @@
   </data>
   <data name="&gt;&gt;txtSource.ZOrder" xml:space="preserve">
     <value>9</value>
-  </data>
-  <data name="label8.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
-    <value>698, 53</value>
-  </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>68, 15</value>
-  </data>
-  <data name="label8.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>BGの位置</value>
@@ -656,15 +426,6 @@
   <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="txtBGPos.Location" type="System.Drawing.Point, System.Drawing">
-    <value>698, 71</value>
-  </data>
-  <data name="txtBGPos.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 23</value>
-  </data>
-  <data name="txtBGPos.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
-  </data>
   <data name="&gt;&gt;txtBGPos.Name" xml:space="preserve">
     <value>txtBGPos</value>
   </data>
@@ -676,18 +437,6 @@
   </data>
   <data name="&gt;&gt;txtBGPos.ZOrder" xml:space="preserve">
     <value>7</value>
-  </data>
-  <data name="label9.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 53</value>
-  </data>
-  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 15</value>
-  </data>
-  <data name="label9.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
   </data>
   <data name="label9.Text" xml:space="preserve">
     <value>BGファイル名</value>
@@ -704,15 +453,6 @@
   <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="txtBGFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 71</value>
-  </data>
-  <data name="txtBGFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 23</value>
-  </data>
-  <data name="txtBGFile.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
-  </data>
   <data name="&gt;&gt;txtBGFile.Name" xml:space="preserve">
     <value>txtBGFile</value>
   </data>
@@ -724,21 +464,6 @@
   </data>
   <data name="&gt;&gt;txtBGFile.ZOrder" xml:space="preserve">
     <value>5</value>
-  </data>
-  <data name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing">
-    <value>17, 17</value>
-  </data>
-  <data name="chkFolderMode.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="chkFolderMode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 330</value>
-  </data>
-  <data name="chkFolderMode.Size" type="System.Drawing.Size, System.Drawing">
-    <value>131, 19</value>
-  </data>
-  <data name="chkFolderMode.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
   </data>
   <data name="chkFolderMode.Text" xml:space="preserve">
     <value>フォルダモードを有効にする</value>
@@ -755,18 +480,6 @@
   <data name="&gt;&gt;chkFolderMode.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="chkEnableIndividualEdit.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="chkEnableIndividualEdit.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 100</value>
-  </data>
-  <data name="chkEnableIndividualEdit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>173, 19</value>
-  </data>
-  <data name="chkEnableIndividualEdit.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
-  </data>
   <data name="chkEnableIndividualEdit.Text" xml:space="preserve">
     <value>個別編集モードを有効にする</value>
   </data>
@@ -782,18 +495,6 @@
   <data name="&gt;&gt;chkEnableIndividualEdit.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="lstDiffs.ItemHeight" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="lstDiffs.Location" type="System.Drawing.Point, System.Drawing">
-    <value>474, 125</value>
-  </data>
-  <data name="lstDiffs.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 199</value>
-  </data>
-  <data name="lstDiffs.TabIndex" type="System.Int32, mscorlib">
-    <value>31</value>
-  </data>
   <data name="&gt;&gt;lstDiffs.Name" xml:space="preserve">
     <value>lstDiffs</value>
   </data>
@@ -806,15 +507,6 @@
   <data name="&gt;&gt;lstDiffs.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="txtDifficulty.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 247</value>
-  </data>
-  <data name="txtDifficulty.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 23</value>
-  </data>
-  <data name="txtDifficulty.TabIndex" type="System.Int32, mscorlib">
-    <value>32</value>
-  </data>
   <data name="&gt;&gt;txtDifficulty.Name" xml:space="preserve">
     <value>txtDifficulty</value>
   </data>
@@ -826,18 +518,6 @@
   </data>
   <data name="&gt;&gt;txtDifficulty.ZOrder" xml:space="preserve">
     <value>1</value>
-  </data>
-  <data name="label10.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 229</value>
-  </data>
-  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>55, 15</value>
-  </data>
-  <data name="label10.TabIndex" type="System.Int32, mscorlib">
-    <value>33</value>
   </data>
   <data name="label10.Text" xml:space="preserve">
     <value>Difficulty</value>
@@ -854,21 +534,7 @@
   <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
-    <value>ja-JP</value>
-  </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="$this.TrayHeight" type="System.Int32, mscorlib">
-    <value>45</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>7, 15</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>874, 485</value>
-  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAcAgIAAAAEAIAAoCAEAdgAAABAQAAABACAAaAQAAJ4IAQAYGAAAAQAgAIgJAAAGDQEAICAAAAEA
@@ -3697,5 +3363,11 @@
   </data>
   <data name="btnuseUpdate.Text" xml:space="preserve">
     <value>自動更新の有効化 (Experimental)</value>
+  </data>
+  <data name="languageToolStripMenuItem1.Text" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="settingsToolStripMenuItem1.Text" xml:space="preserve">
+    <value>設定</value>
   </data>
 </root>

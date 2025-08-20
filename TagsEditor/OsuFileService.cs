@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;   
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -83,10 +83,9 @@ namespace TagsEditor
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to create and execute .osz file: {ex.Message}");
-                throw;  
+                throw;
             }
         }
-
 
         public Metadata ReadFullMetadata(string filePath)
         {
@@ -107,17 +106,62 @@ namespace TagsEditor
                 else if (line.StartsWith("Tags:")) meta.Tags = GetValue(line, "Tags:");
             }
 
-            int bgSectionIndex = Array.FindIndex(lines, l => l.StartsWith("//Background and Video events"));
-            if (bgSectionIndex != -1 && bgSectionIndex + 1 < lines.Length)
+            int eventsSection = Array.FindIndex(lines, l => l.Trim().Equals("[Events]", StringComparison.OrdinalIgnoreCase));
+            int bgSectionIndex = -1;
+            if (eventsSection != -1)
             {
-                var parts = lines[bgSectionIndex + 1].Split(',');
-                if (parts.Length >= 5 && (parts[0] == "0" || parts[0] == "Background"))
+                for (int i = eventsSection + 1; i < lines.Length; i++)
                 {
-                    meta.BGFile = parts[2].Trim().Trim('"');
-                    decimal.TryParse(parts[4].Trim(), out decimal posVal);
-                    meta.BGPos = posVal;
+                    if (lines[i].Trim().StartsWith("//Background and Video events"))
+                    {
+                        bgSectionIndex = i;
+                        break;
+                    }
                 }
             }
+
+            // Video行の探索
+            if (bgSectionIndex != -1)
+            {
+                int lineIdx = bgSectionIndex + 1;
+                while (lineIdx < lines.Length && !lines[lineIdx].Trim().StartsWith("["))
+                {
+                    string trimmed = lines[lineIdx].Trim();
+                    if (trimmed.StartsWith("Video", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Video,startTime,"filename",xOffset,yOffset
+                        var parts = trimmed.Split(',');
+                        if (parts.Length >= 3)
+                        {
+                            meta.VideoFileName = parts[2].Trim().Trim('"');
+                            meta.VideoStartTime = decimal.TryParse(parts[1].Trim(), out var vpos) ? vpos : 0;
+                            if (parts.Length >= 5)
+                            {
+                                meta.VideoXOffset = decimal.TryParse(parts[3].Trim(), out var x) ? x : 0;
+                                meta.VideoYOffset = decimal.TryParse(parts[4].Trim(), out var y) ? y : 0;
+                            }
+                            else
+                            {
+                                meta.VideoXOffset = 0;
+                                meta.VideoYOffset = 0;
+                            }
+                        }
+                    }
+                    else if (trimmed.StartsWith("0") || trimmed.StartsWith("Background")) // BG行
+                    {
+                        var parts = trimmed.Split(',');
+                        if (parts.Length >= 5)
+                        {
+                            meta.BGFile = parts[2].Trim().Trim('"');
+                            decimal.TryParse(parts[4].Trim(), out decimal posVal);
+                            meta.BGPos = posVal;
+                        }
+                        break; // BG行の次は見なくていい
+                    }
+                    lineIdx++;
+                }
+            }
+
             return meta;
         }
 
@@ -134,22 +178,85 @@ namespace TagsEditor
             UpdateLine(lines, "Source:", newMeta.Source);
             UpdateLine(lines, "Tags:", newMeta.Tags);
 
-            bool canUpdateSpecifics = !isFolderMode || isIndividualEdit;
-            string newDiffName = canUpdateSpecifics ? newMeta.Difficulty : originalMeta.Difficulty;
-            string newBgFile = canUpdateSpecifics ? newMeta.BGFile : originalMeta.BGFile;
-            decimal newBgPos = canUpdateSpecifics ? newMeta.BGPos : originalMeta.BGPos;
+            bool canUpdateDiffName = !isFolderMode || isIndividualEdit;
+            string newDiffName = canUpdateDiffName ? newMeta.Difficulty : originalMeta.Difficulty;
+
+            // BG・Video系は常にUIの値(newMeta)で上書き
+            string newBgFile = newMeta.BGFile;
+            decimal newBgPos = newMeta.BGPos;
+            string newVideoFile = newMeta.VideoFileName;
+            decimal newVideoStart = newMeta.VideoStartTime;
+            decimal newVideoX = newMeta.VideoXOffset;
+            decimal newVideoY = newMeta.VideoYOffset;
 
             UpdateLine(lines, "Version:", newDiffName);
 
-            int bgSectionIndex = lines.FindIndex(l => l.StartsWith("//Background and Video events"));
-            if (bgSectionIndex != -1 && bgSectionIndex + 1 < lines.Count)
+            // [Events]セクション探索
+            int eventsIdx = lines.FindIndex(l => l.Trim().Equals("[Events]", StringComparison.OrdinalIgnoreCase));
+            int bgSectionIdx = -1, bgLineIdx = -1, videoLineIdx = -1;
+            if (eventsIdx != -1)
             {
-                var parts = lines[bgSectionIndex + 1].Split(',').ToList();
+                for (int i = eventsIdx + 1; i < lines.Count; i++)
+                {
+                    if (lines[i].Trim().StartsWith("//Background and Video events"))
+                    {
+                        bgSectionIdx = i;
+                        break;
+                    }
+                }
+                // BG,Video行の探索
+                if (bgSectionIdx != -1)
+                {
+                    for (int i = bgSectionIdx + 1; i < lines.Count; i++)
+                    {
+                        string trimmed = lines[i].Trim();
+                        if (videoLineIdx == -1 && trimmed.StartsWith("Video", StringComparison.OrdinalIgnoreCase)) videoLineIdx = i;
+                        if (bgLineIdx == -1 && (trimmed.StartsWith("0") || trimmed.StartsWith("Background"))) { bgLineIdx = i; break; }
+                    }
+                }
+            }
+
+            // Video行の更新
+            if (videoLineIdx != -1 && string.IsNullOrEmpty(newVideoFile))
+            {
+                lines.RemoveAt(videoLineIdx);
+                if (bgLineIdx > videoLineIdx) bgLineIdx--; // インデックス調整
+            }
+            else if (!string.IsNullOrEmpty(newVideoFile))
+            {
+                // 行を生成
+                string videoLine = $"Video,{newVideoStart},\"{newVideoFile}\"";
+                // xOffset/yOffsetが両方0以外の場合のみ付加（どちらかが0以外なら出力）
+                if (newVideoX != 0 || newVideoY != 0)
+                {
+                    videoLine += $",{newVideoX},{newVideoY}";
+                }
+                // Update or Insert
+                if (videoLineIdx != -1)
+                {
+                    lines[videoLineIdx] = videoLine;
+                }
+                else if (bgSectionIdx != -1 && bgLineIdx != -1)
+                {
+                    // BG行の前に挿入
+                    lines.Insert(bgLineIdx, videoLine);
+                }
+                else if (bgSectionIdx != -1)
+                {
+                    // BG行が見つからなくてもセクションの直後に入れる
+                    lines.Insert(bgSectionIdx + 1, videoLine);
+                }
+            }
+
+            // BG行の更新
+            if (bgLineIdx != -1)
+            {
+                var parts = lines[bgLineIdx].Split(',').ToList();
                 if (parts.Count >= 5 && (parts[0] == "0" || parts[0] == "Background"))
                 {
                     parts[2] = $"\"{newBgFile}\"";
                     parts[4] = newBgPos.ToString();
-                    lines[bgSectionIndex + 1] = string.Join(",", parts);
+                    lines[bgLineIdx] = string.Join(",", parts);
                 }
             }
 

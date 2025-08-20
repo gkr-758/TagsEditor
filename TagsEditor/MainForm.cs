@@ -50,8 +50,11 @@ namespace TagsEditor
             txtBGPos.ValueChanged += OnMetadataFieldChanged;
             txtDifficulty.TextChanged += OnDifficultyChanged;
 
-            日本語ToolStripMenuItem.Click += 日本語ToolStripMenuItem_Click;
-            englishToolStripMenuItem.Click += englishToolStripMenuItem_Click;
+            // Video関係のイベント
+            txtVDFile.TextChanged += txtVDFile_TextChanged;
+            txtVDPos.ValueChanged += OnMetadataFieldChanged;
+            txtVDxO.ValueChanged += OnMetadataFieldChanged;
+            txtVDyO.ValueChanged += OnMetadataFieldChanged;
         }
 
         #region UI State Management & Events
@@ -63,10 +66,15 @@ namespace TagsEditor
             chkEnableIndividualEdit.Enabled = isFolderMode;
             lstDiffs.Enabled = isFolderMode && isIndividualEdit;
 
-            bool canEditSpecificFields = !isFolderMode || isIndividualEdit;
-            txtDifficulty.Enabled = canEditSpecificFields;
-            txtBGFile.Enabled = canEditSpecificFields;
-            txtBGPos.Enabled = canEditSpecificFields;
+            // 6項目は常時編集可
+            txtDifficulty.Enabled = true;
+            txtBGFile.Enabled = true;
+            txtBGPos.Enabled = true;
+            txtVDFile.Enabled = true;
+            bool enableVideoRest = !string.IsNullOrWhiteSpace(txtVDFile.Text);
+            txtVDPos.Enabled = enableVideoRest;
+            txtVDxO.Enabled = enableVideoRest;
+            txtVDyO.Enabled = enableVideoRest;
 
             lstDiffs.Invalidate();
         }
@@ -123,6 +131,12 @@ namespace TagsEditor
                 item.EditedMetadata.Tags = txtNewTags.Text;
                 item.EditedMetadata.BGFile = txtBGFile.Text;
                 item.EditedMetadata.BGPos = txtBGPos.Value;
+
+                // Video情報の反映
+                item.EditedMetadata.VideoFileName = txtVDFile.Text;
+                item.EditedMetadata.VideoStartTime = txtVDPos.Value;
+                item.EditedMetadata.VideoXOffset = txtVDxO.Value;
+                item.EditedMetadata.VideoYOffset = txtVDyO.Value;
 
                 item.IsEdited = !item.OriginalMetadata.IsSame(item.EditedMetadata);
                 lstDiffs.Invalidate();
@@ -222,7 +236,17 @@ namespace TagsEditor
             }
             if (!ValidateInputs()) return;
 
-            if (!chkEnableIndividualEdit.Checked)
+            // 個別編集モード時: 変更内容がなければ何もしない
+            if (chkEnableIndividualEdit.Checked)
+            {
+                int updateTargetCount = CalculateUpdateTargetCount();
+                if (updateTargetCount == 0)
+                {
+                    MessageBox.Show(resources.GetString("notUpdateError"), resources.GetString("InfoTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+            else
             {
                 int updateTargetCount = CalculateUpdateTargetCount();
                 if (updateTargetCount == 0)
@@ -246,28 +270,92 @@ namespace TagsEditor
                     Creator = txtCreator.Text.Trim(),
                     Source = txtSource.Text.Trim(),
                     Tags = txtNewTags.Text.Trim(),
-                    Difficulty = txtDifficulty.Text.Trim(),  
-                    BGFile = txtBGFile.Text.Trim(),        
-                    BGPos = txtBGPos.Value                 
+                    Difficulty = txtDifficulty.Text.Trim(),
+                    BGFile = txtBGFile.Text.Trim(),
+                    BGPos = txtBGPos.Value,
+                    VideoFileName = txtVDFile.Text.Trim(),
+                    VideoStartTime = txtVDPos.Value,
+                    VideoXOffset = txtVDxO.Value,
+                    VideoYOffset = txtVDyO.Value
                 };
 
-                _osuService.ProcessBeatmapUpdate(
-                    selectedFolder,
-                    osuFiles,
-                    newMeta,
-                    chkFolderMode.Checked,
-                    chkEnableIndividualEdit.Checked,
-                    btnuseUpdate.Checked   
-                );
-
-                MessageBox.Show(resources.GetString("UpdateOK"), resources.GetString("OKTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                if (Directory.Exists(selectedFolder))
+                if (chkFolderMode.Checked && chkEnableIndividualEdit.Checked)
                 {
+                    // 事前にIsEditedなdiffがなければ何もしない
+                    var editedItems = diffItems.Where(i => i.IsEdited).ToList();
+                    if (editedItems.Count == 0)
+                    {
+                        MessageBox.Show(resources.GetString("notUpdateError"), resources.GetString("InfoTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    // ファイル名重複チェック
+                    var newNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var item in editedItems)
+                    {
+                        var meta = item.EditedMetadata;
+                        string newFileName = $"{Sanitize(meta.RomanisedArtist)} - {Sanitize(meta.RomanisedTitle)} ({Sanitize(meta.Creator)}) [{Sanitize(meta.Difficulty)}].osu";
+                        if (!newNames.Add(newFileName))
+                        {
+                            MessageBox.Show("同じファイル名が複数のdiffに設定されています。diff名やアーティスト等が重複しないよう修正してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+
+                    // スワップ・上書き回避リネーム: 一旦tmp名に退避
+                    var renamePlan = new List<(string oldPath, string tmpPath, string newPath, DiffListItem item)>();
+                    foreach (var item in editedItems)
+                    {
+                        var meta = item.EditedMetadata;
+                        string oldPath = item.FilePath;
+                        string newFileName = $"{Sanitize(meta.RomanisedArtist)} - {Sanitize(meta.RomanisedTitle)} ({Sanitize(meta.Creator)}) [{Sanitize(meta.Difficulty)}].osu";
+                        string newPath = Path.Combine(Path.GetDirectoryName(oldPath), newFileName);
+                        string tmpPath = oldPath + ".__tmp__";
+                        renamePlan.Add((oldPath, tmpPath, newPath, item));
+                    }
+                    // 1. 一旦すべてをtmp名に移動
+                    foreach (var (oldPath, tmpPath, _, _) in renamePlan)
+                    {
+                        if (File.Exists(tmpPath)) File.Delete(tmpPath);
+                        File.Move(oldPath, tmpPath);
+                    }
+                    // 2. tmpから新名にリネームしつつ内容更新
+                    foreach (var (_, tmpPath, newPath, item) in renamePlan)
+                    {
+                        var edited = item.EditedMetadata;
+                        var orig = item.OriginalMetadata;
+                        _osuService.UpdateSingleFile(tmpPath, edited, orig, chkFolderMode.Checked, chkEnableIndividualEdit.Checked);
+
+                        if (File.Exists(newPath)) File.Delete(newPath);
+                        File.Move(tmpPath, newPath);
+
+                        item.OriginalMetadata = item.EditedMetadata.Clone();
+                        item.IsEdited = false;
+                        item.FilePath = newPath;
+                    }
                     osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
+                    LoadDiffList();
                 }
-                LoadMetadata();
-                LoadDiffList();
+                else
+                {
+                    _osuService.ProcessBeatmapUpdate(
+                        selectedFolder,
+                        osuFiles,
+                        newMeta,
+                        chkFolderMode.Checked,
+                        chkEnableIndividualEdit.Checked,
+                        btnuseUpdate.Checked
+                    );
+
+                    MessageBox.Show(resources.GetString("UpdateOK"), resources.GetString("OKTitle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    if (Directory.Exists(selectedFolder))
+                    {
+                        osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
+                    }
+                    LoadMetadata();
+                    LoadDiffList();
+                }
             }
             catch (IOException ex) when (ex.Message == "Exists")
             {
@@ -359,6 +447,11 @@ namespace TagsEditor
             txtBGFile.Text = meta.BGFile;
             txtBGPos.Value = meta.BGPos;
             txtDifficulty.Text = meta.Difficulty;
+            txtVDFile.Text = meta.VideoFileName;
+            txtVDPos.Value = meta.VideoStartTime;
+            txtVDxO.Value = meta.VideoXOffset;
+            txtVDyO.Value = meta.VideoYOffset;
+            txtVDFile_TextChanged(null, null); // 状態を反映
             ignoreFieldChange = false;
         }
 
@@ -375,6 +468,10 @@ namespace TagsEditor
             txtBGFile.Text = "";
             txtBGPos.Value = 0;
             txtDifficulty.Text = "";
+            txtVDFile.Text = "";
+            txtVDPos.Value = 0;
+            txtVDxO.Value = 0;
+            txtVDyO.Value = 0;
             ignoreFieldChange = false;
         }
 
@@ -387,6 +484,15 @@ namespace TagsEditor
             txtCreator.Enabled = enabled;
             txtSource.Enabled = enabled;
             txtNewTags.Enabled = enabled;
+            // 6項目は常時編集可なので下記3行はコメントアウト
+            //txtBGFile.Enabled = enabled;
+            //txtBGPos.Enabled = enabled;
+            //txtDifficulty.Enabled = enabled;
+            //txtVDFile.Enabled = enabled;
+            bool enableVideoRest = enabled && !string.IsNullOrWhiteSpace(txtVDFile.Text);
+            txtVDPos.Enabled = enableVideoRest;
+            txtVDxO.Enabled = enableVideoRest;
+            txtVDyO.Enabled = enableVideoRest;
         }
 
         private int CalculateUpdateTargetCount()
@@ -406,58 +512,23 @@ namespace TagsEditor
                     firstFileMeta.RomanisedTitle != txtRomanisedTitle.Text.Trim() ||
                     firstFileMeta.Creator != txtCreator.Text.Trim() ||
                     firstFileMeta.Source != txtSource.Text.Trim() ||
-                    firstFileMeta.Tags != txtNewTags.Text.Trim();
+                    firstFileMeta.Tags != txtNewTags.Text.Trim() ||
+                    firstFileMeta.BGFile != txtBGFile.Text.Trim() ||
+                    firstFileMeta.BGPos != txtBGPos.Value ||
+                    firstFileMeta.Difficulty != txtDifficulty.Text.Trim() ||
+                    firstFileMeta.VideoFileName != txtVDFile.Text.Trim() ||
+                    firstFileMeta.VideoStartTime != txtVDPos.Value ||
+                    firstFileMeta.VideoXOffset != txtVDxO.Value ||
+                    firstFileMeta.VideoYOffset != txtVDyO.Value;
 
-                if (!chkFolderMode.Checked)
-                {
-                    hasDiff |= firstFileMeta.Difficulty != txtDifficulty.Text.Trim() ||
-                               firstFileMeta.BGFile != txtBGFile.Text.Trim() ||
-                               firstFileMeta.BGPos != txtBGPos.Value;
-                }
                 return hasDiff ? osuFiles.Length : 0;
             }
         }
 
-        private void ExecuteUpdate()
+        private string Sanitize(string input)
         {
-            if (chkFolderMode.Checked && chkEnableIndividualEdit.Checked)
-            {
-                foreach (var item in diffItems.Where(i => i.IsEdited).ToList())
-                {
-                    _osuService.UpdateSingleFile(item.FilePath, item.EditedMetadata, item.OriginalMetadata, chkFolderMode.Checked, chkEnableIndividualEdit.Checked);
-                    item.OriginalMetadata = item.EditedMetadata.Clone();
-                    item.IsEdited = false;
-                }
-                osuFiles = Directory.GetFiles(selectedFolder, "*.osu", SearchOption.AllDirectories);
-                LoadDiffList();
-            }
-            else
-            {
-                var newMeta = new Metadata
-                {
-                    Artist = txtArtist.Text.Trim(),
-                    RomanisedArtist = txtRomanisedArtist.Text.Trim(),
-                    Title = txtTitle.Text.Trim(),
-                    RomanisedTitle = txtRomanisedTitle.Text.Trim(),
-                    Creator = txtCreator.Text.Trim(),
-                    Source = txtSource.Text.Trim(),
-                    Tags = txtNewTags.Text.Trim(),
-                    Difficulty = txtDifficulty.Text.Trim(),
-                    BGFile = txtBGFile.Text.Trim(),
-                    BGPos = txtBGPos.Value
-                };
-
-                var updatedFiles = new List<string>();
-                foreach (var file in osuFiles)
-                {
-                    var originalMeta = _osuService.ReadFullMetadata(file);
-                    string newFilePath = _osuService.UpdateSingleFile(file, newMeta, originalMeta, chkFolderMode.Checked, chkEnableIndividualEdit.Checked);
-                    updatedFiles.Add(newFilePath);
-                }
-                osuFiles = updatedFiles.ToArray();
-                LoadMetadata();
-                if (chkFolderMode.Checked) LoadDiffList();
-            }
+            char[] invalidChars = Path.GetInvalidFileNameChars();
+            return string.Concat(input.Split(invalidChars));
         }
 
         #endregion
@@ -480,7 +551,8 @@ namespace TagsEditor
             string[] allFields = {
                 txtArtist.Text, txtTitle.Text, txtCreator.Text, txtSource.Text, txtDifficulty.Text,
                 txtNewTags.Text, txtBGFile.Text, txtBGPos.Value.ToString(),
-                txtRomanisedArtist.Text, txtRomanisedTitle.Text
+                txtRomanisedArtist.Text, txtRomanisedTitle.Text,
+                txtVDFile.Text, txtVDPos.Value.ToString(), txtVDxO.Value.ToString(), txtVDyO.Value.ToString()
             };
 
             foreach (var field in allFields)
@@ -533,6 +605,25 @@ namespace TagsEditor
         }
         #endregion
 
+        // Videoファイル名が空なら残り無効
+        private void txtVDFile_TextChanged(object sender, EventArgs e)
+        {
+            bool enable = !string.IsNullOrWhiteSpace(txtVDFile.Text);
+            txtVDPos.Enabled = enable;
+            txtVDxO.Enabled = enable;
+            txtVDyO.Enabled = enable;
+            OnMetadataFieldChanged(sender, e); // これを追加
+        }
+
+        private void LoadMetadataToUI(Metadata meta)
+        {
+            txtVDFile.Text = meta.VideoFileName;
+            txtVDPos.Value = meta.VideoStartTime;
+            txtVDxO.Value = meta.VideoXOffset;
+            txtVDyO.Value = meta.VideoYOffset;
+            txtVDFile_TextChanged(null, null); // 状態を反映
+        }
+
         #region Language Switch
 
         private void SwitchLanguage(string cultureName)
@@ -548,8 +639,6 @@ namespace TagsEditor
             Application.Restart();
             Environment.Exit(0);
 
-
-
             string executablePath = Application.ExecutablePath;
 
             try
@@ -564,12 +653,14 @@ namespace TagsEditor
             }
         }
 
-        private void 日本語ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void JapaneseCheck_Click(object sender, EventArgs e)
         {
+            EnglishCheck.Checked = false;
             SwitchLanguage("ja-JP");
         }
-        private void englishToolStripMenuItem_Click(object sender, EventArgs e)
+        private void EnglishCheck_Click(object sender, EventArgs e)
         {
+            JapaneseCheck.Checked = false;
             SwitchLanguage("en-US");
         }
         #endregion
@@ -578,6 +669,18 @@ namespace TagsEditor
         {
             if (Properties.Settings.Default.WindowLocation != System.Drawing.Point.Empty)
             {
+                string currentLang = Properties.Settings.Default.Language;
+                if (currentLang == "ja-JP")
+                {
+                    JapaneseCheck.Checked = true;
+                    EnglishCheck.Checked = false;
+                }
+                else // en-US またはデフォルトの場合
+                {
+                    EnglishCheck.Checked = true;
+                    JapaneseCheck.Checked = false;
+                }
+
                 bool isVisible = false;
                 foreach (var screen in Screen.AllScreens)
                 {
@@ -597,6 +700,7 @@ namespace TagsEditor
                     this.StartPosition = FormStartPosition.CenterScreen;
                 }
             }
+
         }
 
         private void btnuseUpdate_Click(object sender, EventArgs e)
@@ -604,13 +708,34 @@ namespace TagsEditor
             if (btnuseUpdate.Checked)
             {
                 chkBackup.Checked = true;
-
                 chkBackup.Enabled = false;
             }
             else
             {
                 chkBackup.Enabled = true;
             }
+        }
+
+        private void JapaneseCheck_Click_1(object sender, EventArgs e)
+        {
+            if (JapaneseCheck.Checked)
+            {
+                return;
+            }
+            JapaneseCheck.Checked = true;
+            EnglishCheck.Checked = false;
+            SwitchLanguage("ja-JP");
+        }
+
+        private void EnglishCheck_Click_1(object sender, EventArgs e)
+        {
+            if (EnglishCheck.Checked)
+            {
+                return;
+            }
+            EnglishCheck.Checked = true;
+            JapaneseCheck.Checked = false;
+            SwitchLanguage("en-US");
         }
     }
 }
