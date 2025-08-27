@@ -320,10 +320,13 @@ namespace TagsEditor
             }
         }
 
+        /// <summary>
+        /// RomanisedArtist, RomanisedTitle, Creator, Difficulty のいずれかが変更された場合はファイル名をリネームします。
+        /// </summary>
         private string RenameFileIfNeeded(string filePath, Metadata oldMeta, Metadata newMeta, bool isFolderMode, bool isIndividualEdit)
         {
             char[] invalidChars = Path.GetInvalidFileNameChars();
-            string Sanitize(string input) => string.Concat(input.Split(invalidChars));
+            string Sanitize(string input) => string.Concat(input?.Split(invalidChars) ?? Array.Empty<string>());
 
             string newRomanisedArtist = Sanitize(newMeta.RomanisedArtist);
             string newRomanisedTitle = Sanitize(newMeta.RomanisedTitle);
@@ -332,10 +335,14 @@ namespace TagsEditor
             bool canUpdateSpecifics = !isFolderMode || isIndividualEdit;
             string newDiffName = Sanitize(canUpdateSpecifics ? newMeta.Difficulty : oldMeta.Difficulty);
 
-            if (oldMeta.RomanisedArtist == newRomanisedArtist &&
-                oldMeta.RomanisedTitle == newRomanisedTitle &&
-                oldMeta.Creator == newCreator &&
-                oldMeta.Difficulty == newDiffName)
+            // すべての要素を比較
+            bool isSame =
+                (oldMeta.RomanisedArtist ?? "") == newRomanisedArtist &&
+                (oldMeta.RomanisedTitle ?? "") == newRomanisedTitle &&
+                (oldMeta.Creator ?? "") == newCreator &&
+                (oldMeta.Difficulty ?? "") == newDiffName;
+
+            if (isSame)
             {
                 return filePath;
             }

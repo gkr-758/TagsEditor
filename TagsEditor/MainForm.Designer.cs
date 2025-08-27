@@ -354,8 +354,8 @@
             // 
             // TagsEditor
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = AutoScaleMode.None;
             this.Controls.Add(this.txtVDyO);
             this.Controls.Add(this.txtVDxO);
             this.Controls.Add(this.label14);

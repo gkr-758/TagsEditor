@@ -66,8 +66,10 @@ namespace TagsEditor
             chkEnableIndividualEdit.Enabled = isFolderMode;
             lstDiffs.Enabled = isFolderMode && isIndividualEdit;
 
-            // 6項目は常時編集可
-            txtDifficulty.Enabled = true;
+            // Difficultyは「個別編集モード有効時のみ」編集可能
+            txtDifficulty.Enabled = !isFolderMode || isIndividualEdit;
+
+            // BG, Video系は常時編集可
             txtBGFile.Enabled = true;
             txtBGPos.Enabled = true;
             txtVDFile.Enabled = true;
@@ -147,6 +149,7 @@ namespace TagsEditor
         {
             if (ignoreFieldChange) return;
 
+            // 個別編集モードの場合のみDifficultyを反映
             if (chkFolderMode.Checked && chkEnableIndividualEdit.Checked && lstDiffs.SelectedItem is DiffListItem item)
             {
                 item.EditedMetadata.Difficulty = txtDifficulty.Text;
@@ -484,10 +487,15 @@ namespace TagsEditor
             txtCreator.Enabled = enabled;
             txtSource.Enabled = enabled;
             txtNewTags.Enabled = enabled;
-            // 6項目は常時編集可なので下記3行はコメントアウト
+
+            // Difficultyは「個別編集モード有効時のみ」編集可能
+            bool isFolderMode = chkFolderMode.Checked;
+            bool isIndividualEdit = chkEnableIndividualEdit.Checked;
+            txtDifficulty.Enabled = enabled && (!isFolderMode || isIndividualEdit);
+
+            // BG, Video系は常時編集可
             //txtBGFile.Enabled = enabled;
             //txtBGPos.Enabled = enabled;
-            //txtDifficulty.Enabled = enabled;
             //txtVDFile.Enabled = enabled;
             bool enableVideoRest = enabled && !string.IsNullOrWhiteSpace(txtVDFile.Text);
             txtVDPos.Enabled = enableVideoRest;
